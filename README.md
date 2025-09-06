@@ -22,3 +22,8 @@ npm install
 npm run start
 ```
 Navigate to [localhost:8080](http://localhost:8080). You should see Pixinter running. 
+
+
+
+## Development
+

@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { config } from "../stores";
-  import { picture, pictureHistory } from "../stores";
+  import { pictureHistory } from "../stores";
+  import { pictureStore } from "../lib/stores/pictureStore.js";
 
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
@@ -20,8 +21,14 @@
   }
 
   function handleUndo() {
-    $picture.setPixels(($pictureHistory).pop().getPixels());
-    $picture.redraw(ctx);
+    const lastPicture = ($pictureHistory).pop();
+    if (lastPicture) {
+      pictureStore.setPixels(lastPicture.getPixels());
+      pictureStore.update(p => {
+        p.redraw(ctx);
+        return p;
+      });
+    }
   }
 </script>
 

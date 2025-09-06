@@ -1,85 +1,74 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { picture } from '../stores';
-    import { elt } from "../subroutines";
-
+    import { pictureStore } from '../lib/stores/pictureStore';
+    import { Picture } from '../types';
+    
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
-
-    onMount(() => {
-        canvas = document.querySelector('canvas') as HTMLCanvasElement;
-        ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    });
+    let fileInput: HTMLInputElement;
 
     function handleSave() {
-        let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); 
-        window.location.href=image;
+        const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+        if(canvas) {
+            let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            window.location.href=image;
+        }
     }
 
-    function handleLoad() {
-        startLoad(({pixels}) => {
-            picture.subscribe(n=> {
-                n.setPixels(pixels)
-                n.redraw(ctx);
-            });
-        });
+    function handleLoadClick() {
+        fileInput.click();
     }
 
-    function startLoad(dispatch) {
-        let input = elt("input", {
-            type: "file",
-            onchange: () => finishLoad(input.files[0], dispatch)
-        });
-        input.click();
-        input.remove();
-    }
+    function handleFileSelect(event: Event) {
+        const target = event.target as HTMLInputElement;
+        if (!target.files) return;
+        const file = target.files[0];
+        if (!file) return;
 
-    function finishLoad(file, dispatch) {
-        if (file == null) return;
-        let reader = new FileReader();
-        reader.addEventListener("load", () => {
-            let image = elt("img", {
-            onload: () => dispatch({
-                pixels: pictureFromImage(image)
-            }),
-            src: reader.result
-            });
-        });
+        const reader = new FileReader();
+        reader.onload = () => {
+            const image = new Image();
+            image.onload = async () => {
+                const pixels = await pictureFromImage(image);
+                const newPic = new Picture(pixels.length, pixels[0].length, 10);
+                newPic.setPixels(pixels);
+                pictureStore.update(_ => newPic);
+                const mainCanvas = document.querySelector("#canvas") as HTMLCanvasElement;
+                if(mainCanvas) {
+                    const mainCtx = mainCanvas.getContext("2d");
+                    if (mainCtx) {
+                        pictureStore.subscribe(p => p.redraw(mainCtx))();
+                    }
+                }
+            };
+            image.src = reader.result as string;
+        };
         reader.readAsDataURL(file);
     }
 
-    //Can be better
-    function pictureFromImage(image) {
-        let width = Math.min(900, image.width);
-        let height = Math.min(600, image.height);
+    async function pictureFromImage(image: HTMLImageElement): Promise<string[][]> {
+        const width = Math.min(90, image.width);
+        const height = Math.min(60, image.height);
 
-        let canvas = elt("canvas", {width: width, height: height});
-        let cx = canvas.getContext("2d");
-        cx.drawImage(image, 0, 0, width, height); 
+        const offscreenCanvas = new OffscreenCanvas(width, height);
+        const ctx = offscreenCanvas.getContext("2d");
+        if (!ctx) return [];
+        ctx.drawImage(image, 0, 0, width, height);
+        const imageData = ctx.getImageData(0, 0, width, height);
 
-        let pixels = [];
-        let ret: string[][] =  new Array(height);
-        for (let i = 0; i < height; i++)
-            ret[i] = new Array(width);
-
-        let {data} = cx.getImageData(0, 0, width, height);
-        function hex(n) {
-            return n.toString(16).padStart(2, "0");
-        }
-        for (let i = 0; i < data.length; i += 4) {
-            let [r, g, b] = data.slice(i, i + 3);
-            pixels.push("#" + hex(r) + hex(g) + hex(b));
-        }
-        for (let j = 0; j < (height / 10); j++)
-            for (let i = 0; i < (width / 10); i++) 
-                ret[j][i] = pixels[(j * width + i) * 10];
-
-        return ret;
+        return new Promise((resolve) => {
+            const worker = new Worker(new URL('../lib/utils/imageProcessor.js', import.meta.url));
+            worker.onmessage = (event) => {
+                resolve(event.data);
+                worker.terminate();
+            };
+            worker.postMessage({ imageData });
+        });
     }
 </script>
 
 <button class="save" on:click={handleSave}> Save </button>
-<button class="load" on:click={handleLoad}> Load </button>
+<button class="load" on:click={handleLoadClick}> Load </button>
+<input type="file" bind:this={fileInput} on:change={handleFileSelect} style="display: none;" />
 
 <style>
     button {

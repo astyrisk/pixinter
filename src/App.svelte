@@ -7,7 +7,7 @@
 </script>
 
 <main>
-	<h1> Pixinter </h1>
+	<h1> </h1>
 
 	<div class="canvas">
 		<PictureCanvas />
