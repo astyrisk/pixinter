@@ -11,7 +11,7 @@
     import { Picture } from "../types";
     import type { Point } from "../types";
     import type { Config } from "../types"
-    import { drawCircle, drawRect } from "../lib/utils/drawing";
+    import { drawShape } from "../lib/utils/drawing";
     import { width, height, backgroundColor } from "../lib/config";
 
 
@@ -76,11 +76,8 @@
         if (!drawing) return;
 
         switch(config.tool) {
-            case 'RECT':
-                drawRect(start, getPointerPosition(event, canvas), config['color'], ctx, initialPicture);
-                break;
-            case 'CIRCLRE':
-                drawCircle(start, getPointerPosition(event, canvas), config['color'], ctx, initialPicture);
+            case 'SHAPE':
+                drawShape(start, getPointerPosition(event, canvas), config['color'], ctx, initialPicture);
                 break;
             default:
                 drawPoint(getPointerPosition(event, canvas), config);

@@ -4,17 +4,21 @@
     import { TOOLENUM } from "../types";
     import { getClassName } from "../subroutines";
     import { pictureStore } from "../lib/stores/pictureStore.js";
+    import { selectedShape } from "../lib/stores/stores.js";
+    import ShapeTool from "./ShapeTool.svelte";
 
     const tools: string[] = ["pen", "eraser", "fill", "picker"];
-    const shapes: string[] = ["circle", "rect"];
 
     let toolsImg: HTMLImageElement[];
-
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
 
     onMount(() => {
         toolsImg = Array.from(document.querySelectorAll(".img"));
+        const shapeToolImg = document.querySelector('.tool[data-tooltip="shape"] img');
+        if (shapeToolImg) {
+            toolsImg.push(shapeToolImg as HTMLImageElement);
+        }
         canvas = document.querySelector('canvas') as HTMLCanvasElement;
         ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         
@@ -46,24 +50,34 @@
 
     function handleMouseClick(event: MouseEvent) {
         let toolName: string = getClassName(event.target);
+        let targetElement = undefined;
         toolsImg.map(n => { n.style.borderWidth = "0px"; });
-        toolsImg.filter(n => n.classList[0] == toolName)[0].style.borderWidth = "1px";
-        toolName = toolName.toUpperCase();
 
-        config.update(n => n = {
-            color: n.color,
-            background_color: n.background_color,
-            tool: TOOLENUM[toolName],
-        });
-    }
+        toolsImg.forEach(x => {
+            if (x.classList[0] == toolName) {
+                targetElement = x;
+            }
+        })
+
+        if (targetElement) {
+            targetElement.style.borderWidth = "1px";
+            config.update(n => ({
+                ...n,
+                tool: TOOLENUM[toolName.toUpperCase()],
+            }));
+        }
+   }
 
     function handleMouseOver(event: MouseEvent | FocusEvent) {
         let toolName: string = getClassName(event.target);
         const selectedTool = document.querySelector('.img[style*="border-width: 1px"]');
-        if (selectedTool && selectedTool.classList[0] === toolName) return;
+        if (selectedTool && selectedTool.classList.contains(toolName)) return;
 
-        toolsImg.map(n => { if(n.style.borderWidth !== "1px") n.style.borderColor = "transparent"; });
-        toolsImg.filter(n => n.classList[0] == toolName)[0].style.borderColor = "white";
+        toolsImg.forEach(n => { if(n.style.borderWidth !== "1px") n.style.borderColor = "transparent"; });
+        const targetElement = toolsImg.find(n => n.classList.contains(toolName));
+        if (targetElement) {
+            targetElement.style.borderColor = "white";
+        }
     }
 </script>
 
@@ -81,11 +95,9 @@
 
     <!-- Shapes -->
     <!-- <div class="shapes"> -->
-        {#each shapes as shape}
-            <div class="shape" data-tooltip={shape}>
-                <img src="../../icons-ex/{shape}.png" class="{shape} img" alt="{shape}" width="42px" on:click={handleMouseClick} on:keydown={() => {}} on:mouseover={handleMouseOver} on:focus={() => {}}>
-            </div>
-        {/each}
+        <div on:click={handleMouseClick} on:mouseover={handleMouseOver} on:focus={() => {}} on:keydown={()=>{}}>
+            <ShapeTool />
+        </div>
     <!-- </div> -->
     
     

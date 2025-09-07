@@ -7,8 +7,7 @@ const TOOLENUM = {
     ERASER: 'ERASER',
     FILL: 'FILL',
     PICKER: 'PICKER',
-    CIRCLE: 'CIRCLRE',
-    RECT: 'RECT',
+    SHAPE: 'SHAPE',
 } as const;
 
 type ObjectValues<T> = T[keyof T];

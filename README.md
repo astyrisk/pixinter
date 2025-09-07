@@ -29,6 +29,8 @@ Navigate to [localhost:8080](http://localhost:5173). You should see Pixinter run
 - [x] Fix button hover effects.
 - [x] Center the canvas on the page using absolute positioning.
 - [x] Implement drag-and-drop for drawing shapes instead of two-click.
+- [ ] shapes all in one button
+- [ ] handle drawing outside of the canvas (draw rest of the shape)
 
 ### New Features
 - [ ] Add multiple canvas size options (e.g., small, medium, large).
@@ -38,7 +40,7 @@ Navigate to [localhost:8080](http://localhost:5173). You should see Pixinter run
 ### Bug Fixes
 - [ ] The delete button should use the background color, not white.
 - [ ] Fix the "undo" functionality.
-- [ ] the circle draw ignores few pixels on the right and below
+- [x] the circle draw ignores few pixels on the right and below
 
 
 
