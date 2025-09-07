@@ -28,17 +28,16 @@
         reader.onload = () => {
             const image = new Image();
             image.onload = async () => {
+                const mainCanvas = document.querySelector("#canvas") as HTMLCanvasElement;
+                if (!mainCanvas) return;
+                const mainCtx = mainCanvas.getContext("2d");
+                if (!mainCtx) return;
+
                 const pixels = await pictureFromImage(image);
                 const newPic = new Picture(pixels.length, pixels[0].length, 10);
-                newPic.setPixels(pixels);
+                newPic.setPixels(pixels, mainCtx);
                 pictureStore.update(_ => newPic);
-                const mainCanvas = document.querySelector("#canvas") as HTMLCanvasElement;
-                if(mainCanvas) {
-                    const mainCtx = mainCanvas.getContext("2d");
-                    if (mainCtx) {
-                        pictureStore.subscribe(p => p.redraw(mainCtx))();
-                    }
-                }
+                pictureStore.subscribe(p => p.redraw(mainCtx))();
             };
             image.src = reader.result as string;
         };
@@ -66,16 +65,43 @@
     }
 </script>
 
-<button class="save" on:click={handleSave}> Save </button>
-<button class="load" on:click={handleLoadClick}> Load </button>
+<div class="action-button" data-tooltip="Save">
+    <img src="/icons-ex/download.png" alt="Save" width="30px" on:click={handleSave} on:keydown={() => {}} />
+</div>
+<div class="action-button" data-tooltip="Load">
+    <img src="/icons-ex/ulpoad.png" alt="Load" width="30px" on:click={handleLoadClick} on:keydown={() => {}} />
+</div>
 <input type="file" bind:this={fileInput} on:change={handleFileSelect} style="display: none;" />
 
 <style>
-    button {
+    img {
+        border-width: 0px;
+        border: solid;
+        border-radius: 10%;
+        border-color: white;
+        border-width: 0px;
+        margin-right: 7px;
+        margin-left: 7px;
         margin-top: 1em;
-        width: 7%;
+        cursor: pointer;
     }
-    .load{
-        margin-left: 1em;
+    .action-button {
+        position: relative;
+        display: inline-block;
+    }
+    .action-button:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-right: 10px;
+        padding: 5px;
+        background-color: #2e3440;
+        color: white;
+        border: 1px solid #E1E4EA;
+        border-radius: 5px;
+        white-space: nowrap;
+        z-index: 1;
     }
 </style>

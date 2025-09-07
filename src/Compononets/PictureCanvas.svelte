@@ -20,8 +20,7 @@
     let ctx: CanvasRenderingContext2D;
     let start: Point;
 
-    let drawingRect: boolean = false;
-    let drawingCircle: boolean = false;
+    let drawing: boolean = false;
 
     onMount(() => {
         ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -48,12 +47,15 @@
     }
 
     /* handling canvas */
-    function handleClick(event: MouseEvent, config: Config) {
+    function handleMouseDown(event: MouseEvent, config: Config) {
         if (event.button != 0) return;
 
         let newPic = new Picture(90, 60, 10);
-        newPic.setPixels(pictureStore.getPixels());
+        newPic.setPixels(pictureStore.getPixels(), ctx);
         pictureHistory.update(history => [...history, newPic]);
+
+        drawing = true;
+        start = getPointerPosition(event, canvas);
 
         switch(config.tool) {
             case 'PICKER':
@@ -62,36 +64,32 @@
             case 'FILL':
                 pictureStore.fillColor(getPointerPosition(event, canvas), config['color'], ctx);
                 break;
-            case 'RECT':
-                if (drawingRect) drawRect(start, getPointerPosition(event, canvas), config['color'], ctx);
-                else start = getPointerPosition(event, canvas);
-                drawingRect = !drawingRect;
-                break;
-            case 'CIRCLRE':
-                if (drawingCircle) drawCircle(start, getPointerPosition(event, canvas), config['color'], ctx);
-                else start = getPointerPosition(event, canvas);
-                drawingCircle = !drawingCircle;
-                break;
             default:
                 drawPoint(getPointerPosition(event, canvas), config);
         }
    }
 
     function handleMove(event: MouseEvent, config: Config) {
-        if (event.buttons == 0) return;
-
-        let newPic = new Picture(90, 60, 10);
-        newPic.setPixels(pictureStore.getPixels());
-        pictureHistory.update(history => [...history, newPic]);
+        if (!drawing) return;
 
         switch(config.tool) {
+            case 'RECT':
+                drawRect(start, getPointerPosition(event, canvas), config['color'], ctx);
+                break;
+            case 'CIRCLRE':
+                drawCircle(start, getPointerPosition(event, canvas), config['color'], ctx);
+                break;
             default:
                 drawPoint(getPointerPosition(event, canvas), config);
-        } 
+        }
+    }
+
+    function handleMouseUp(event: MouseEvent, config: Config) {
+        drawing = false;
     }
 
 
     /*********************************************************/
 </script>
 
-<canvas bind:this={canvas} id="canvas" width={width} height={height} style="border:1px solid #000; background-color: {backgroundColor}" on:click={(e) => handleClick(e, $config)} on:mousemove={(e) => handleMove(e, $config)}  >  </canvas>
+<canvas bind:this={canvas} id="canvas" width={width} height={height} style="border:1px solid #000; background-color: {backgroundColor}" on:mousedown={(e) => handleMouseDown(e, $config)} on:mousemove={(e) => handleMove(e, $config)} on:mouseup={(e) => handleMouseUp(e, $config)} >  </canvas>

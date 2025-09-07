@@ -36,8 +36,10 @@ class Picture {
             this.pixels[i] = new Array(width).fill("#E1E4EA");
     }
 
-    setPixels(pixels: string[][]) {
+    setPixels(pixels: string[][], ctx: CanvasRenderingContext2D) {
         this.pixels = pixels;
+        ctx.clearRect(0, 0, this.width * this.scale, this.height * this.scale);
+        this.redraw(ctx);
     }
 
     getPixels() {

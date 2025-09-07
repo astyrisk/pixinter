@@ -25,9 +25,9 @@ Navigate to [localhost:8080](http://localhost:5173). You should see Pixinter run
 
 ## Development
 ### UI/UX Enhancements
-- [ ] Redesign buttons with a pixelated style.
-- [ ] Fix button hover effects.
-- [ ] Center the canvas on the page using absolute positioning.
+- [x] Redesign buttons with a pixelated style.
+- [x] Fix button hover effects.
+- [x] Center the canvas on the page using absolute positioning.
 - [ ] Implement drag-and-drop for drawing shapes instead of two-click.
 
 ### New Features

@@ -54,9 +54,9 @@ function createPictureStore() {
       return get(this).getPixels();
     },
 
-    setPixels(pixels) {
+    setPixels(pixels, ctx) {
       update(picture => {
-        picture.setPixels(pixels);
+        picture.setPixels(pixels, ctx);
         return picture;
       });
     }

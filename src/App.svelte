@@ -1,24 +1,18 @@
 <script lang="ts">
 	import PictureCanvas from "./Compononets/PictureCanvas.svelte";
 	import Tool from "./Compononets/Tool.svelte";
-	import Settings from './Compononets/Settings.svelte'
 	import File from "./Compononets/File.svelte"
 
 </script>
 
 <main>
-	<h1> </h1>
-
+	<div class="toolbox">
+		<Tool />
+	</div>
 	<div class="canvas">
 		<PictureCanvas />
 	</div>
-
-	<div class="tools">
-		<div class="tool"> <Tool/> </div>
-		<div class="settings"> <Settings /> </div>
-	</div>
-
-	<div class="file">
+	<div class="action-buttons">
 		<File />
 	</div>
 </main>
@@ -26,16 +20,18 @@
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;1,200&family=Ubuntu:wght@300&display=swap');
 
-	h1, .canvas, .tools, .file {
-		color: white;
+	main {
 		display: flex;
-		justify-content: center;
+		flex-direction: row;
 		align-items: center;
+		justify-content: center;
+		gap: 1em;
+		height: 100%;
 	}
-	h1{
-		margin-top: 2.6em;
-	}
-	.tool {
-		margin-right: 1em;
+
+	.toolbox, .action-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
 	}
 </style>
