@@ -19,6 +19,7 @@
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
     let start: Point;
+    let initialPicture: Picture;
 
     let drawing: boolean = false;
 
@@ -54,6 +55,8 @@
         newPic.setPixels(pictureStore.getPixels(), ctx);
         pictureHistory.update(history => [...history, newPic]);
 
+        initialPicture = newPic;
+
         drawing = true;
         start = getPointerPosition(event, canvas);
 
@@ -74,10 +77,10 @@
 
         switch(config.tool) {
             case 'RECT':
-                drawRect(start, getPointerPosition(event, canvas), config['color'], ctx);
+                drawRect(start, getPointerPosition(event, canvas), config['color'], ctx, initialPicture);
                 break;
             case 'CIRCLRE':
-                drawCircle(start, getPointerPosition(event, canvas), config['color'], ctx);
+                drawCircle(start, getPointerPosition(event, canvas), config['color'], ctx, initialPicture);
                 break;
             default:
                 drawPoint(getPointerPosition(event, canvas), config);

@@ -28,17 +28,17 @@ Navigate to [localhost:8080](http://localhost:5173). You should see Pixinter run
 - [x] Redesign buttons with a pixelated style.
 - [x] Fix button hover effects.
 - [x] Center the canvas on the page using absolute positioning.
-- [ ] Implement drag-and-drop for drawing shapes instead of two-click.
+- [x] Implement drag-and-drop for drawing shapes instead of two-click.
 
 ### New Features
 - [ ] Add multiple canvas size options (e.g., small, medium, large).
-- [ ] Allow users to choose a background color.
 - [ ] Provide an option for a grid overlay on the canvas.
 - [ ] Implement a "redo" function.
 
 ### Bug Fixes
 - [ ] The delete button should use the background color, not white.
 - [ ] Fix the "undo" functionality.
+- [ ] the circle draw ignores few pixels on the right and below
 
 
 
