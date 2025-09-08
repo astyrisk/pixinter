@@ -5,12 +5,12 @@
     //TODO in mousemove, and mouseclick, change only whenver there is a change in mouse position; track mouse position in a point variable
 
     import { onMount } from 'svelte';
-	import { config, pictureHistory } from "../stores";
+	import { config } from "../stores";
 	import { pictureStore } from "../lib/stores/pictureStore";
+    import { commandHistory } from "../lib/stores/commandHistory";
     import { getPointerPosition } from "../subroutines";
-    import { Picture } from "../types";
-    import type { Point } from "../types";
-    import type { Config } from "../types"
+    import { Picture, DrawCommand, Point, CompoundCommand, ShapeCommand } from "../types";
+    import type { Config, Command } from "../types"
     import { drawShape } from "../lib/utils/drawing";
     import { width, height, backgroundColor } from "../lib/config";
 
@@ -20,22 +20,23 @@
     let ctx: CanvasRenderingContext2D;
     let start: Point;
     let initialPicture: Picture;
+    let commands: Command[] = [];
 
     let drawing: boolean = false;
 
     onMount(() => {
         ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     });
+    $: if (ctx && $pictureStore) {
+        $pictureStore.redraw(ctx);
+    }
 
     function drawPoint(p: Point, config: Config) {
-        switch(config.tool) {
-            case 'PEN':
-                pictureStore.drawPoint(p, config['color'], ctx);
-                break;
-            case 'ERASER':
-                pictureStore.drawPoint(p, config['background_color'], ctx);
-                break;
-        }
+        let color = config.tool === 'ERASER' ? config.background_color : config.color;
+        let command = new DrawCommand(p, color, $pictureStore);
+        command.execute();
+        commands.push(command);
+        pictureStore.update(p => p);
     }
 
     function pickColor(p: Point) {
@@ -51,14 +52,10 @@
     function handleMouseDown(event: MouseEvent, config: Config) {
         if (event.button != 0) return;
 
-        let newPic = new Picture(90, 60, 10);
-        newPic.setPixels(pictureStore.getPixels(), ctx);
-        pictureHistory.update(history => [...history, newPic]);
-
-        initialPicture = newPic;
-
         drawing = true;
         start = getPointerPosition(event, canvas);
+        
+        initialPicture = $pictureStore.copy();
 
         switch(config.tool) {
             case 'PICKER':
@@ -77,7 +74,10 @@
 
         switch(config.tool) {
             case 'SHAPE':
-                drawShape(start, getPointerPosition(event, canvas), config['color'], ctx, initialPicture);
+                let current = getPointerPosition(event, canvas);
+                let tempPicture = initialPicture.copy();
+                drawShape(start, current, config['color'], ctx, tempPicture);
+                pictureStore.set(tempPicture);
                 break;
             default:
                 drawPoint(getPointerPosition(event, canvas), config);
@@ -86,6 +86,15 @@
 
     function handleMouseUp(event: MouseEvent, config: Config) {
         drawing = false;
+
+        if (config.tool === 'SHAPE') {
+            let command = new ShapeCommand(pictureStore, initialPicture);
+            commandHistory.execute(command);
+            initialPicture = null;
+        } else if (commands.length > 0) {
+            commandHistory.execute(new CompoundCommand(commands));
+            commands = [];
+        }
     }
 
 

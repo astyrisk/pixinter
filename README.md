@@ -21,7 +21,7 @@ npm install
 ```bash
 npm run dev
 ```
-Navigate to [localhost:8080](http://localhost:5173). You should see Pixinter running. 
+Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter running. 
 
 ## Development
 ### UI/UX Enhancements
@@ -29,18 +29,20 @@ Navigate to [localhost:8080](http://localhost:5173). You should see Pixinter run
 - [x] Fix button hover effects.
 - [x] Center the canvas on the page using absolute positioning.
 - [x] Implement drag-and-drop for drawing shapes instead of two-click.
-- [ ] shapes all in one button
-- [ ] handle drawing outside of the canvas (draw rest of the shape)
+- [x] shapes all in one button
 
 ### New Features
 - [ ] Add multiple canvas size options (e.g., small, medium, large).
 - [ ] Provide an option for a grid overlay on the canvas.
-- [ ] Implement a "redo" function.
+- [x] Implement a "redo" function.
 
 ### Bug Fixes
-- [ ] The delete button should use the background color, not white.
-- [ ] Fix the "undo" functionality.
+- [x] Fix the "undo" functionality.
 - [x] the circle draw ignores few pixels on the right and below
+- [ ] handle drawing outside of the canvas (draw rest of the shape)
+- [ ] pixels get conflicted after a while of drawing the circle has a hole in the middle when using undo/redo. the undo/redo is not working properly.
+- [ ] The delete button should use the background color, not white.
+- [ ] fix the weird behavior of these things
 
 
 

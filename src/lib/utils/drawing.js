@@ -4,8 +4,6 @@ import { selectedShape } from "../stores/stores";
 import { get } from "svelte/store";
 
 export function drawRect(start, end, color, ctx, initialPicture) {
-    pictureStore.setPixels(initialPicture.getPixels(), ctx);
-
     let xStart = Math.min(start.x, end.x);
     let yStart = Math.min(start.y, end.y);
     let xEnd   = Math.max(start.x, end.x);
@@ -16,12 +14,10 @@ export function drawRect(start, end, color, ctx, initialPicture) {
         for (let x = xStart; x < xEnd; x++)
             drawn.push({x,y});
 
-   pictureStore.drawPoints(drawn, color, ctx);
+   initialPicture.drawPoints(drawn, color, ctx);
 }
 
 export function drawCircle(start, end, color, ctx, initialPicture) {
-    pictureStore.setPixels(initialPicture.getPixels(), ctx);
-
     let r = Math.ceil(getRadius(start, end));
     let drawn  = [];
 
@@ -32,10 +28,10 @@ export function drawCircle(start, end, color, ctx, initialPicture) {
 
     for (let y = yStart; y <= yEnd; y++)
         for (let x = xStart; x <= xEnd; x++)
-            if (getRadius(start, {x, y}) <= r)
+            if (getRadius(start, {x, y}) <= r && x >= 0 && x < initialPicture.width && y >= 0 && y < initialPicture.height)
                 drawn.push({x, y});
 
-    pictureStore.drawPoints(drawn, color, ctx);
+    initialPicture.drawPoints(drawn, color, ctx);
 }
 
 export function drawShape(start, end, color, ctx, initialPicture) {

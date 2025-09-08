@@ -1,9 +1,10 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { config, pictureHistory } from "../stores";
+    import { config } from "../stores";
     import { TOOLENUM } from "../types";
     import { getClassName } from "../subroutines";
     import { pictureStore } from "../lib/stores/pictureStore.js";
+    import { commandHistory } from "../lib/stores/commandHistory.js";
     import { selectedShape } from "../lib/stores/stores.js";
     import ShapeTool from "./ShapeTool.svelte";
 
@@ -38,14 +39,19 @@
     }
 
     function handleUndo() {
-        const lastPicture = ($pictureHistory).pop();
-        if (lastPicture) {
-            pictureStore.setPixels(lastPicture.getPixels());
-            pictureStore.update(p => {
-                p.redraw(ctx);
-                return p;
-            });
-        }
+        commandHistory.undo();
+        pictureStore.update(p => {
+            p.redraw(ctx);
+            return p;
+        });
+    }
+
+    function handleRedo() {
+        commandHistory.redo();
+        pictureStore.update(p => {
+            p.redraw(ctx);
+            return p;
+        });
     }
 
     function handleMouseClick(event: MouseEvent) {
@@ -102,6 +108,7 @@
     
     
     <div class="undo" data-tooltip="undo">  <img src="../../icons-ex/undo.png" class="undo" width="40" alt="undo icon" on:click={handleUndo} on:keydown={() => {}}> </div>
+    <div class="redo" data-tooltip="redo">  <img src="../../icons-ex/redo.png" class="redo" width="40" alt="redo icon" on:click={handleRedo} on:keydown={() => {}}> </div>
     <div class="color-picker" data-tooltip="color picker" style="background-color: {$config['color']}" on:click={() => document.getElementById('colorInput').click()}></div>
     <input type="color" id="colorInput" bind:value={$config['color']} on:input={handleColorChange} style="display: none;" />
 </main>
@@ -130,12 +137,12 @@
         border-radius: 10%;
         margin-top: 1.3em;
     }
-    .tool, .shape, .color-picker, .undo {
+    .tool, .shape, .color-picker, .undo, .redo {
         cursor: pointer;
         position: relative;
     }
 
-    .tool:hover::after, .shape:hover::after, .undo:hover::after, .color-picker:hover::after {
+    .tool:hover::after, .shape:hover::after, .undo:hover::after, .redo:hover::after, .color-picker:hover::after {
         content: attr(data-tooltip);
         position: absolute;
         left: 100%;
