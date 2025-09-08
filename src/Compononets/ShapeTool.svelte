@@ -2,12 +2,27 @@
     import { selectedShape } from '../lib/stores/stores.js';
     import { config } from '../stores';
     import { TOOLENUM } from '../types';
+    import { onMount, onDestroy } from 'svelte';
 
     let showMenu = false;
+    let toolNode;
 
+    onMount(() => {
+        window.addEventListener('click', handleClickOutside);
+    });
+
+    onDestroy(() => {
+        window.removeEventListener('click', handleClickOutside);
+    });
+
+    function handleClickOutside(event) {
+        if (toolNode && !toolNode.contains(event.target)) {
+            showMenu = false;
+        }
+    }
     function handleContextMenu(event) {
         event.preventDefault();
-        showMenu = !showMenu;
+        showMenu = true;
     }
 
     function selectShape(shape) {
@@ -18,12 +33,15 @@
 
 </script>
 
-<div class="tool" on:contextmenu={handleContextMenu} data-tooltip="shape">
-    <img src={$selectedShape === 'rect' ? '../../icons-ex/rect.png' : '../../icons-ex/circle.png'} alt="Shape Tool" width="42px" class="shape img"/>
+<div class="tool" on:contextmenu={handleContextMenu} data-tooltip="shape" bind:this={toolNode} class:menu-open={showMenu}>
+    <img src={$selectedShape === 'rect' ? '../../icons-ex/rect.png' : $selectedShape === 'circle' ? '../../icons-ex/circle.png' : '../../icons-ex/line.png'} alt="Shape Tool" width="42px" class="shape img"/>
     {#if showMenu}
         <div class="context-menu">
-            <div class="shape img" on:click={() => selectShape('rect')}>Rectangle</div>
-            <div class="shape img" on:click={() => selectShape('circle')}>Circle</div>
+            <!-- <div class="shape img" on:click={() => selectShape('rect')}><img class="shape img" src="../../icons-ex/rect.png" width="30"> </div>
+            <div class="shape img" on:click={() => selectShape('circle')}><img class ="shape img" src="../../icons-ex/circle.png" width="30"></div> -->
+            <div class="shape img" on:click={() => selectShape('rect')}> Rectangle </div>
+            <div class="shape img" on:click={() => selectShape('circle')}>Circle </div>
+            <div class="shape img" on:click={() => selectShape('line')}>Line </div>
         </div>
     {/if}
 </div>
@@ -34,6 +52,10 @@
         cursor: pointer;
     }
 
+    img {
+        margin-top: 1em;
+    }
+
     .img {
         border-width: 0px;
         border: solid;
@@ -42,17 +64,19 @@
         border-width: 0px;
         margin-right: 7px;
         margin-left: 7px;
-        margin-top: 1em;
     }
     .context-menu {
         position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: white;
-        border: 1px solid #ccc;
+        top: 0;
+        left: 100%;
+        background-color: #2e3440;
+        border: 1px solid #E1E4EA;
+        color: #E1E4EA;
         z-index: 10;
+        display: flex;
+        flex-direction: row;
     }
-    .tool:hover::after {
+    .tool:not(.menu-open):hover::after {
         content: attr(data-tooltip);
         position: absolute;
         left: 100%;
@@ -72,6 +96,6 @@
         cursor: pointer;
     }
     .context-menu div:hover {
-        background-color: #eee;
+        background-color: #434c5e;
     }
 </style>

@@ -11,10 +11,7 @@ function createCommandHistory() {
     subscribe,
     execute: (command) => {
       update((history) => {
-        if (command.setFinalPixels) {
-          command.setFinalPixels();
-        }
-        command.execute();
+        console.log("Executing command:", command);
         pictureStore.update((p) => p);
         return {
           undoStack: [...history.undoStack, command],

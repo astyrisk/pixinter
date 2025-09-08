@@ -48,7 +48,6 @@ class Picture {
     setPixels(pixels: string[][], ctx: CanvasRenderingContext2D | null) {
         this.pixels = pixels;
         if (ctx) {
-            ctx.clearRect(0, 0, this.width * this.scale, this.height * this.scale);
             this.redraw(ctx);
         }
     }
@@ -62,6 +61,7 @@ class Picture {
     }
 
     redraw(ctx: CanvasRenderingContext2D) {
+        ctx.clearRect(0, 0, this.width * this.scale, this.height * this.scale);
         for (let j = 0; j < this.height; j++)
             for (let i = 0; i < this.width; i++) {
                 ctx.fillStyle = this.pixels[j][i];
@@ -146,20 +146,35 @@ class CompoundCommand implements Command {
 class ShapeCommand implements Command {
     pictureStore: any;
     initialPicturePixels: string[][];
-    finalPicturePixels: string[][] | null;
+    finalPicturePixels: string[][];
 
-    constructor(pictureStore: any, initialPicture: Picture) {
+    constructor(pictureStore: any, initialPicture: Picture, finalPicture: Picture) {
         this.pictureStore = pictureStore;
         this.initialPicturePixels = initialPicture.getPixels();
-        this.finalPicturePixels = null;
+        this.finalPicturePixels = finalPicture.getPixels();
     }
 
     execute(): void {
         this.pictureStore.setPixels(this.finalPicturePixels, null);
     }
 
-    setFinalPixels(): void {
-        this.finalPicturePixels = this.pictureStore.getPixels();
+    undo(): void {
+        this.pictureStore.setPixels(this.initialPicturePixels, null);
+    }
+}
+class FillCommand implements Command {
+    pictureStore: any;
+    initialPicturePixels: string[][];
+    finalPicturePixels: string[][];
+
+    constructor(pictureStore: any, initialPicture: Picture, finalPicture: Picture) {
+        this.pictureStore = pictureStore;
+        this.initialPicturePixels = initialPicture.getPixels();
+        this.finalPicturePixels = finalPicture.getPixels();
+    }
+
+    execute(): void {
+        this.pictureStore.setPixels(this.finalPicturePixels, null);
     }
 
     undo(): void {
@@ -167,5 +182,5 @@ class ShapeCommand implements Command {
     }
 }
 
-export {Picture, TOOLENUM, Point, DrawCommand, CompoundCommand, ShapeCommand};
+export {Picture, TOOLENUM, Point, DrawCommand, CompoundCommand, ShapeCommand, FillCommand};
 export type {Config, ToolEnum, Command};

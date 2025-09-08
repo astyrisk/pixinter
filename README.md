@@ -24,25 +24,31 @@ npm run dev
 Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter running. 
 
 ## Development
-### UI/UX Enhancements
-- [x] Redesign buttons with a pixelated style.
-- [x] Fix button hover effects.
-- [x] Center the canvas on the page using absolute positioning.
-- [x] Implement drag-and-drop for drawing shapes instead of two-click.
-- [x] shapes all in one button
-
-### New Features
-- [ ] Add multiple canvas size options (e.g., small, medium, large).
+### Properties panel
+- [ ] The properties panel should allow for modifying the selected line's stroke color, width, and style (solid, dashed, dotted).
+### Shapes
+- [x] line
+- [ ] rectangle ( square: shift pressed)
+- [ ] ellipse (circle: shift pressed)
+- [ ] Triangle
+- [ ] give options to draw broders with other color on shapes. the options should appear on top?
+- [ ] shape icon should indicate that there is multiple options (a small cornered triangle)
+### Eraser
+- [ ] right click on eraser would prompt a context menu with a slider to choose the size. maybe the slider should appear on top of canvas?
+- [ ] should use actually remove the pixels not draw the background color.
+### Layers
+- [ ] basic implementation
+### canvas
 - [ ] Provide an option for a grid overlay on the canvas.
-- [x] Implement a "redo" function.
-
+- [ ] option to clear all the canvas, and everything!
+- [ ] pixel size
+### Action
+- [ ] saving an image would save it in png format, removing the background color 
+- [ ] load is not working
+### undo/redo
+- [x] undo not working for fill
 ### Bug Fixes
-- [x] Fix the "undo" functionality.
-- [x] the circle draw ignores few pixels on the right and below
-- [ ] handle drawing outside of the canvas (draw rest of the shape)
-- [ ] pixels get conflicted after a while of drawing the circle has a hole in the middle when using undo/redo. the undo/redo is not working properly.
-- [ ] The delete button should use the background color, not white.
-- [ ] fix the weird behavior of these things
+- [ ] sometimes a small rectangle adjacent to a rectangle getting redrawn would appear - can't reproduce. this causes the rectangles to behave weridly. #can't reproduce
 
 
 

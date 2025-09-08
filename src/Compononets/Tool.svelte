@@ -31,11 +31,10 @@
     });
 
     function handleColorChange(event) {
-        config.update(n => n =  {
+        config.update(n => ({
+            ...n,
             color: event.target.value,
-            background_color: n.background_color,
-            tool: n.tool,
-        });
+        }));
     }
 
     function handleUndo() {
@@ -73,43 +72,28 @@
             }));
         }
    }
-
-    function handleMouseOver(event: MouseEvent | FocusEvent) {
-        let toolName: string = getClassName(event.target);
-        const selectedTool = document.querySelector('.img[style*="border-width: 1px"]');
-        if (selectedTool && selectedTool.classList.contains(toolName)) return;
-
-        toolsImg.forEach(n => { if(n.style.borderWidth !== "1px") n.style.borderColor = "transparent"; });
-        const targetElement = toolsImg.find(n => n.classList.contains(toolName));
-        if (targetElement) {
-            targetElement.style.borderColor = "white";
-        }
-    }
 </script>
 
 
 <main>
     <!-- Tools-->
-    <!-- <div class="tools"> -->
     {#each tools as tool}
         <div class="tool" data-tooltip={tool}>
-            <img src="../../icons-ex/{tool}.png" class="{tool} img" alt="{tool}" width="42px" on:click={handleMouseClick} on:keydown={() => {}} on:mouseover={handleMouseOver} on:focus={() => {}}>
+            <img src="../../icons-ex/{tool}.png" class="{tool} img" alt="{tool}" width="42px" on:click={handleMouseClick} on:keydown={() => {}} on:focus={() => {}}>
         </div>
     {/each}
-    <!-- </div> -->
 
 
-    <!-- Shapes -->
-    <!-- <div class="shapes"> -->
-        <div on:click={handleMouseClick} on:mouseover={handleMouseOver} on:focus={() => {}} on:keydown={()=>{}}>
-            <ShapeTool />
-        </div>
-    <!-- </div> -->
-    
-    
+<div on:click={handleMouseClick} on:focus={() => {}} on:keydown={()=>{}}>
+    <ShapeTool />
+</div>
+
     <div class="undo" data-tooltip="undo">  <img src="../../icons-ex/undo.png" class="undo" width="40" alt="undo icon" on:click={handleUndo} on:keydown={() => {}}> </div>
+
     <div class="redo" data-tooltip="redo">  <img src="../../icons-ex/redo.png" class="redo" width="40" alt="redo icon" on:click={handleRedo} on:keydown={() => {}}> </div>
+
     <div class="color-picker" data-tooltip="color picker" style="background-color: {$config['color']}" on:click={() => document.getElementById('colorInput').click()}></div>
+
     <input type="color" id="colorInput" bind:value={$config['color']} on:input={handleColorChange} style="display: none;" />
 </main>
 

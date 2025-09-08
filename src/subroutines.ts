@@ -18,11 +18,16 @@ function elt(type, props, ...children) {
   return dom;
 }
 
-function getPointerPosition(p: MouseEvent, domNode: HTMLElement): Point {
-  let rect = domNode.getBoundingClientRect();
+function getPointerPosition(p: MouseEvent, domNode: HTMLCanvasElement): Point {
+    let rect = domNode.getBoundingClientRect();
+    let x = Math.floor((p.clientX - rect.left) / 10);
+    let y = Math.floor((p.clientY - rect.top) / 10);
 
-  return {x: Math.floor((p.clientX - rect.left) / 10), 
-          y: Math.floor((p.clientY - rect.top)  / 10)};
+    // Clamp the coordinates to the canvas boundaries
+    x = Math.max(0, Math.min(x, domNode.width / 10));
+    y = Math.max(0, Math.min(y, domNode.height / 10));
+
+    return { x, y };
 }
 
 function getRadius(x: Point, y: Point): number {
