@@ -33,19 +33,34 @@ export function drawRect(start, end, color, ctx, initialPicture, isSquare) {
    initialPicture.drawPoints(drawn, color, ctx);
 }
 
-export function drawCircle(start, end, color, ctx, initialPicture) {
-    let r = Math.ceil(getRadius(start, end));
-    let drawn  = [];
+export function drawEllipse(start, end, color, ctx, initialPicture, isCircle) {
+    let rx = Math.abs(end.x - start.x);
+    let ry = Math.abs(end.y - start.y);
 
-    let xStart = start.x - r;
-    let yStart = start.y - r;
-    let xEnd   = start.x + r;
-    let yEnd   = start.y + r;
+    if (isCircle) {
+        let r = Math.max(rx, ry);
+        rx = r;
+        ry = r;
+    }
 
-    for (let y = yStart; y <= yEnd; y++)
-        for (let x = xStart; x <= xEnd; x++)
-            if (getRadius(start, {x, y}) <= r && x >= 0 && x < initialPicture.width && y >= 0 && y < initialPicture.height)
-                drawn.push({x, y});
+    let drawn = [];
+
+    let xStart = start.x - rx;
+    let yStart = start.y - ry;
+    let xEnd = start.x + rx;
+    let yEnd = start.y + ry;
+
+    for (let y = yStart; y <= yEnd; y++) {
+        for (let x = xStart; x <= xEnd; x++) {
+            if (
+                (Math.pow(x - start.x, 2) / Math.pow(rx, 2)) +
+                (Math.pow(y - start.y, 2) / Math.pow(ry, 2)) <= 1 &&
+                x >= 0 && x < initialPicture.width && y >= 0 && y < initialPicture.height
+            ) {
+                drawn.push({ x, y });
+            }
+        }
+    }
 
     initialPicture.drawPoints(drawn, color, ctx);
 }
@@ -75,12 +90,12 @@ export function drawLine(start, end, color, ctx, initialPicture) {
     initialPicture.drawPoints(drawn, color, ctx);
 }
 
-export function drawShape(start, end, color, ctx, initialPicture, isSquare) {
+export function drawShape(start, end, color, ctx, initialPicture, isConstrained) {
     const shape = get(selectedShape);
     if (shape === 'rect') {
-        drawRect(start, end, color, ctx, initialPicture, isSquare);
+        drawRect(start, end, color, ctx, initialPicture, isConstrained);
     } else if (shape === 'circle') {
-        drawCircle(start, end, color, ctx, initialPicture);
+        drawEllipse(start, end, color, ctx, initialPicture, isConstrained);
     } else {
         drawLine(start, end, color, ctx, initialPicture);
     }

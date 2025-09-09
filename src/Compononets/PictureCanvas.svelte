@@ -9,6 +9,7 @@
     import type { Config, Command } from "../types"
     import { drawShape } from "../lib/utils/drawing";
     import { width, height, backgroundColor } from "../lib/config";
+    import type { ModuleCompileOptions } from 'svelte/compiler';
 
 
     /* constants & HTMLElements */
@@ -48,15 +49,9 @@
     /* handling canvas */
     function handleMouseDown(event: MouseEvent, config: Config) {
         if (event.button != 0) return;
-        if (event.shiftKey && (event.button === 0 || event.button === 2)) {
-            event.preventDefault();
-            pictureStore.set(initialPicture);
-            drawing = false;
-            return;
-        }
  
-         drawing = true;
-         start = getPointerPosition(event, canvas);
+        drawing = true;
+        start = getPointerPosition(event, canvas);
         
         initialPicture = $pictureStore.copy();
 
@@ -72,21 +67,19 @@
             default:
                 drawPoint(getPointerPosition(event, canvas), config);
         }
-
-        window.addEventListener('mousemove', handleMove);
-        window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('contextmenu', handleContextMenu);
    }
 
+
     function handleContextMenu(event: MouseEvent) {
-        event.preventDefault();
+        if (!drawing) return;
         pictureStore.set(initialPicture);
         drawing = false;
-
-        window.removeEventListener('mousemove', handleMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-        window.removeEventListener('contextmenu', handleContextMenu);
     }
+
+    function handleKeyDown(event: KeyboardEvent) {
+        // 
+    }
+
 
     function handleMove(event: MouseEvent) {
         if (!drawing) return;
@@ -104,6 +97,7 @@
     }
 
     function handleMouseUp(event: MouseEvent) {
+        if (!drawing) return;
         drawing = false;
 
         if ($config.tool === 'SHAPE') {
@@ -114,14 +108,11 @@
             commandHistory.execute(new CompoundCommand(commands));
             commands = [];
         }
-
-        window.removeEventListener('mousemove', handleMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-        window.removeEventListener('contextmenu', handleContextMenu);
     }
 
 
     /*********************************************************/
 </script>
 
-<canvas bind:this={canvas} id="canvas" width={width} height={height} style="border:1px solid #000; background-color: {backgroundColor}" on:mousedown={(e) => handleMouseDown(e, $config)} >  </canvas>
+<canvas bind:this={canvas} id="canvas" width={width} height={height} style="border:1px solid #000; background-color: {backgroundColor}" on:mousedown={(e) => handleMouseDown(e, $config)}>  </canvas>
+<svelte:window on:mousemove={handleMove} on:mouseup={handleMouseUp} on:contextmenu|preventDefault|stopPropagation={handleContextMenu} on:keydown={handleKeyDown} />

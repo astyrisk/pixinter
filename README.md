@@ -28,10 +28,10 @@ Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter run
 - [ ] The properties panel should allow for modifying the selected line's stroke color, width, and style (solid, dashed, dotted).
 ### Shapes
 - [x] line
-- [ ] rectangle ( square: shift pressed)
-- [ ] ellipse (circle: shift pressed)
+- [x] rectangle ( square: shift pressed)
+- [x] ellipse (circle: shift pressed)
 - [ ] Triangle
-- [ ] give options to draw broders with other color on shapes. the options should appear on top?
+- [ ] give options to draw broders on shapes. the options should appear on top?
 - [ ] shape icon should indicate that there is multiple options (a small cornered triangle)
 ### Eraser
 - [ ] right click on eraser would prompt a context menu with a slider to choose the size. maybe the slider should appear on top of canvas?
@@ -47,8 +47,12 @@ Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter run
 - [ ] load is not working
 ### undo/redo
 - [x] undo not working for fill
+- [ ] shape after pen bug
+- [ ] fill redo draws a pixel of next shape
 ### Bug Fixes
 - [ ] sometimes a small rectangle adjacent to a rectangle getting redrawn would appear - can't reproduce. this causes the rectangles to behave weridly. #can't reproduce
 
 
-
+## Notes 
+1. FF and its forks enforce context menu for shift, right click.  toggle the following to false on about:config to bypass it 
+`dom.event.contextmenu.shift_suppresses_event`
