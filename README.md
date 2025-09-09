@@ -31,7 +31,8 @@ Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter run
 - [x] rectangle ( square: shift pressed)
 - [x] ellipse (circle: shift pressed)
 - [ ] Triangle
-- [ ] give options to draw broders on shapes. the options should appear on top?
+- [x] give options to draw broders on shapes. the options should appear on top?
+- [ ] stroke options? dotted and continuous , also normal line options? dotted and continuous
 - [ ] shape icon should indicate that there is multiple options (a small cornered triangle)
 ### Eraser
 - [ ] right click on eraser would prompt a context menu with a slider to choose the size. maybe the slider should appear on top of canvas?

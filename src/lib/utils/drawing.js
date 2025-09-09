@@ -3,7 +3,7 @@ import { getRadius } from "../../subroutines";
 import { selectedShape } from "../stores/stores";
 import { get } from "svelte/store";
 
-export function drawRect(start, end, color, ctx, initialPicture, isSquare) {
+export function drawRect(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isSquare) {
     let xStart = Math.min(start.x, end.x);
     let yStart = Math.min(start.y, end.y);
     let xEnd   = Math.max(start.x, end.x);
@@ -25,15 +25,25 @@ export function drawRect(start, end, color, ctx, initialPicture, isSquare) {
         }
     }
     let drawn  = [];
+    let stroke = [];
 
-    for (let y = yStart; y < yEnd; y++)
-        for (let x = xStart; x < xEnd; x++)
-            drawn.push({x,y});
+    for (let y = yStart; y < yEnd; y++) {
+        for (let x = xStart; x < xEnd; x++) {
+            if (x >= xStart && x < xEnd && y >= yStart && y < yEnd) {
+                if (x < xStart + strokeWidth || x >= xEnd - strokeWidth || y < yStart + strokeWidth || y >= yEnd - strokeWidth) {
+                    stroke.push({x,y});
+                } else {
+                    drawn.push({x,y});
+                }
+            }
+        }
+    }
 
    initialPicture.drawPoints(drawn, color, ctx);
+   initialPicture.drawPoints(stroke, strokeColor, ctx);
 }
 
-export function drawEllipse(start, end, color, ctx, initialPicture, isCircle) {
+export function drawEllipse(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isCircle) {
     let rx = Math.abs(end.x - start.x);
     let ry = Math.abs(end.y - start.y);
 
@@ -44,6 +54,7 @@ export function drawEllipse(start, end, color, ctx, initialPicture, isCircle) {
     }
 
     let drawn = [];
+    let stroke = [];
 
     let xStart = start.x - rx;
     let yStart = start.y - ry;
@@ -57,12 +68,29 @@ export function drawEllipse(start, end, color, ctx, initialPicture, isCircle) {
                 (Math.pow(y - start.y, 2) / Math.pow(ry, 2)) <= 1 &&
                 x >= 0 && x < initialPicture.width && y >= 0 && y < initialPicture.height
             ) {
-                drawn.push({ x, y });
+                let isStroke = false;
+                if (rx > strokeWidth && ry > strokeWidth) {
+                    if (
+                        (Math.pow(x - start.x, 2) / Math.pow(rx - strokeWidth, 2)) +
+                        (Math.pow(y - start.y, 2) / Math.pow(ry - strokeWidth, 2)) > 1
+                    ) {
+                        isStroke = true;
+                    }
+                } else {
+                    isStroke = true;
+                }
+
+                if (isStroke) {
+                    stroke.push({ x, y });
+                } else {
+                    drawn.push({ x, y });
+                }
             }
         }
     }
 
     initialPicture.drawPoints(drawn, color, ctx);
+    initialPicture.drawPoints(stroke, strokeColor, ctx);
 }
 
 export function drawLine(start, end, color, ctx, initialPicture) {
@@ -90,12 +118,12 @@ export function drawLine(start, end, color, ctx, initialPicture) {
     initialPicture.drawPoints(drawn, color, ctx);
 }
 
-export function drawShape(start, end, color, ctx, initialPicture, isConstrained) {
+export function drawShape(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isConstrained) {
     const shape = get(selectedShape);
     if (shape === 'rect') {
-        drawRect(start, end, color, ctx, initialPicture, isConstrained);
+        drawRect(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isConstrained);
     } else if (shape === 'circle') {
-        drawEllipse(start, end, color, ctx, initialPicture, isConstrained);
+        drawEllipse(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isConstrained);
     } else {
         drawLine(start, end, color, ctx, initialPicture);
     }

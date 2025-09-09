@@ -88,7 +88,7 @@
             case 'SHAPE':
                 let current = getPointerPosition(event, canvas);
                 let tempPicture = initialPicture.copy();
-                drawShape(start, current, $config['color'], null, tempPicture, event.shiftKey);
+                drawShape(start, current, $config['color'], $config['strokeColor'], $config['strokeWidth'], null, tempPicture, event.shiftKey);
                 pictureStore.set(tempPicture);
                 break;
             default:

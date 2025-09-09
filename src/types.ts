@@ -22,6 +22,8 @@ interface Config {
     color: string,
     background_color: string,
     tool: ToolEnum,
+    strokeColor: string,
+    strokeWidth: number,
 }
 
 interface Command {
