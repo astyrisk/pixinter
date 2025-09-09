@@ -5,7 +5,7 @@
 	import { pictureStore } from "../lib/stores/pictureStore";
     import { commandHistory } from "../lib/stores/commandHistory";
     import { getPointerPosition } from "../subroutines";
-    import { Picture, DrawCommand, Point, CompoundCommand, ShapeCommand, FillCommand } from "../types";
+    import { Picture, DrawCommand, Point, CompoundCommand, ShapeCommand, FillCommand, TOOLENUM } from "../types";
     import type { Config, Command } from "../types"
     import { drawShape } from "../lib/utils/drawing";
     import { width, height, backgroundColor } from "../lib/config";
@@ -30,10 +30,27 @@
     }
 
     function drawPoint(p: Point, config: Config) {
-        let color = config.tool === 'ERASER' ? config.background_color : config.color;
-        let command = new DrawCommand(p, color, $pictureStore);
-        command.execute();
-        commands.push(command);
+        let color = config.tool === TOOLENUM.ERASER ? 'transparent' : config.color;
+        if (config.tool === TOOLENUM.ERASER) {
+            let size = config.eraserSize ?? 1;
+            let halfSize = Math.floor(size / 2);
+            let points = [];
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    let x = p.x - halfSize + i;
+                    let y = p.y - halfSize + j;
+                    points.push(new Point(x, y));
+                }
+            }
+            let drawCommands = points.map(point => new DrawCommand(point, color, $pictureStore));
+            let command = new CompoundCommand(drawCommands);
+            command.execute();
+            commands.push(command);
+        } else {
+            let command = new DrawCommand(p, color, $pictureStore);
+            command.execute();
+            commands.push(command);
+        }
         pictureStore.update(p => p);
     }
 

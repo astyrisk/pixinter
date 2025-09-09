@@ -24,6 +24,7 @@ interface Config {
     tool: ToolEnum,
     strokeColor: string,
     strokeWidth: number,
+    eraserSize?: number,
 }
 
 interface Command {
@@ -66,8 +67,10 @@ class Picture {
         ctx.clearRect(0, 0, this.width * this.scale, this.height * this.scale);
         for (let j = 0; j < this.height; j++)
             for (let i = 0; i < this.width; i++) {
-                ctx.fillStyle = this.pixels[j][i];
-                ctx.fillRect(i * 10, j * 10, this.scale, this.scale);
+                if (this.pixels[j][i] !== 'transparent') {
+                    ctx.fillStyle = this.pixels[j][i];
+                    ctx.fillRect(i * 10, j * 10, this.scale, this.scale);
+                }
             }
     }
 

@@ -35,8 +35,9 @@ Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter run
 - [ ] stroke options? dotted and continuous , also normal line options? dotted and continuous
 - [ ] shape icon should indicate that there is multiple options (a small cornered triangle)
 ### Eraser
-- [ ] right click on eraser would prompt a context menu with a slider to choose the size. maybe the slider should appear on top of canvas?
-- [ ] should use actually remove the pixels not draw the background color.
+- [x] right click on eraser would prompt a context menu with a slider to choose the size. maybe the slider should appear on top of canvas?
+- [ ] should actually remove the pixels not draw the background color.
+### Canvas Cursor
 ### Layers
 - [ ] basic implementation
 ### canvas

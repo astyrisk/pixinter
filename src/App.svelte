@@ -24,6 +24,12 @@
 				<input type="number" bind:value={$config['strokeWidth']} min="0" max="3" class="stroke-width-input" readonly  />
 			</div>
 		{/if}
+		{#if $config.tool === 'ERASER'}
+			<div class="stroke-width-slider" data-tooltip="eraser size">
+				<input type="range" min="1" max="4" bind:value={$config['eraserSize']} style="width: 100px;" />
+				<input type="number" bind:value={$config['eraserSize']} min="1" max="4" class="stroke-width-input" readonly />
+			</div>
+		{/if}
 		<PictureCanvas />
 	</div>
 	<div class="action-buttons">
