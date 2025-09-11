@@ -1,6 +1,7 @@
 //DONE
 
 import type  { Point } from "./types";
+import { SCALE } from "./lib/constants";
 
 function elt(type, props, ...children) {
   let dom = document.createElement(type);
@@ -20,12 +21,12 @@ function elt(type, props, ...children) {
 
 function getPointerPosition(p: MouseEvent, domNode: HTMLCanvasElement): Point {
     let rect = domNode.getBoundingClientRect();
-    let x = Math.floor((p.clientX - rect.left) / 10);
-    let y = Math.floor((p.clientY - rect.top) / 10);
+    let x = Math.floor((p.clientX - rect.left) / SCALE);
+    let y = Math.floor((p.clientY - rect.top) / SCALE);
 
     // Clamp the coordinates to the canvas boundaries
-    x = Math.max(0, Math.min(x, domNode.width / 10));
-    y = Math.max(0, Math.min(y, domNode.height / 10));
+    x = Math.max(0, Math.min(x, domNode.width / SCALE));
+    y = Math.max(0, Math.min(y, domNode.height / SCALE));
 
     return { x, y };
 }

@@ -7,6 +7,7 @@ class Point {
         this.y = y;
     }
 }
+
 const TOOLENUM = {
     PEN: 'PEN',
     ERASER: 'ERASER',
@@ -79,7 +80,7 @@ class Picture {
                 console.log(`Pixel at (${i}, ${j}): ${this.pixels[j][i]}`);
                 if (this.pixels[j][i] !== null) { // Check for null instead of 'transparent'
                     ctx.fillStyle = this.pixels[j][i] as string;
-                    ctx.fillRect(i * 10, j * 10, this.scale, this.scale);
+                    ctx.fillRect(i * this.scale, j * this.scale, this.scale, this.scale);
                 }
             }
     }
@@ -89,9 +90,9 @@ class Picture {
         this.pixels[p.y][p.x] = color;
         if (ctx && color !== null) { // Only draw if color is not null
             ctx.fillStyle = color;
-            ctx.fillRect(p.x * 10, p.y * 10, this.scale, this.scale);
+            ctx.fillRect(p.x * this.scale, p.y * this.scale, this.scale, this.scale);
         } else if (ctx && color === null) { // Clear the rectangle if color is null
-            ctx.clearRect(p.x * 10, p.y * 10, this.scale, this.scale);
+            ctx.clearRect(p.x * this.scale, p.y * this.scale, this.scale, this.scale);
         }
     }
 

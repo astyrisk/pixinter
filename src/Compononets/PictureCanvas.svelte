@@ -8,7 +8,7 @@
 	   import { Picture, DrawCommand, Point, CompoundCommand, ShapeCommand, FillCommand, TOOLENUM } from "../types";
 	   import type { Config, Command } from "../types"
 	   import { drawShape } from "../lib/utils/drawing";
-	   import { width, height, backgroundColor } from "../lib/config";
+	   import { width, height, backgroundColor, scale } from "../lib/config";
 	   import { get } from 'svelte/store'; // Import get
 
 
@@ -73,14 +73,14 @@
 	       ctx.strokeStyle = '#ccc';
 	       ctx.lineWidth = 1;
 	
-	       for (let i = 0; i < width; i += 10) {
+	       for (let i = 0; i < width; i += scale) {
 	           ctx.beginPath();
 	           ctx.moveTo(i, 0);
 	           ctx.lineTo(i, height);
 	           ctx.stroke();
 	       }
 	
-	       for (let i = 0; i < height; i += 10) {
+	       for (let i = 0; i < height; i += scale) {
 	           ctx.beginPath();
 	           ctx.moveTo(0, i);
 	           ctx.lineTo(width, i);

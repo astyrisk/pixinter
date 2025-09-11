@@ -1,8 +1,9 @@
 import { writable, get } from 'svelte/store';
 import { Picture } from '../../types';
+import { SCALE } from '../constants';
 
 function createPictureStore() {
-  const { subscribe, set, update } = writable(new Picture(90, 60, 10));
+  const { subscribe, set, update } = writable(new Picture(90, 60, SCALE));
 
   return {
     subscribe,

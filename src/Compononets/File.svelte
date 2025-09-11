@@ -1,6 +1,7 @@
 <script lang="ts">
     import { pictureStore } from '../lib/stores/pictureStore';
-    import { Picture } from '../types';
+	import { Picture } from '../types';
+	import { SCALE } from '../lib/constants';
     import { commandHistory } from '../lib/stores/commandHistory';
     import { ClearAllCommand } from '../lib/ClearAllCommand';
     import { get } from 'svelte/store';
@@ -42,7 +43,7 @@
                 if (!mainCtx) return;
 
                 const pixels = await pictureFromImage(image);
-                const newPic = new Picture(pixels.length, pixels[0].length, 10);
+                const newPic = new Picture(pixels.length, pixels[0].length, SCALE);
                 newPic.setPixels(pixels, mainCtx);
                 pictureStore.update(_ => newPic);
                 pictureStore.subscribe(p => p.redraw(mainCtx))();

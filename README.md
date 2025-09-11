@@ -51,8 +51,13 @@ Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter run
 - [ ] fill redo draws a pixel of next shape
 ### Custom Color picker
 ### Bug Fixes
-- [ ] sometimes a small rectangle adjacent to a rectangle getting redrawn would appear - can't reproduce. this causes the rectangles to behave weridly. #can't reproduce
+- [x] sometimes a small rectangle adjacent to a rectangle getting redrawn would appear - can't reproduce. this causes the rectangles to behave weridly. #can't reproduce
 
+### Cursor
+
+
+
+### [ ] Efficieny refactor!
 
 ## Notes 
 1. FF and its forks enforce context menu for shift right click.  toggle the following to false on about:config to bypass it 
