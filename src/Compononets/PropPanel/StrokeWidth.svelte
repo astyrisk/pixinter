@@ -39,4 +39,35 @@
         font-size: 1em;
         padding: 2px;
     }
+
+        input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 1px;
+        background: #434c5e;
+        /* border-radius: 5px; */
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 19px;
+        height: 19px;
+        background: #eceff4;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 19px;
+        height: 19px;
+        background: #eceff4;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
 </style>

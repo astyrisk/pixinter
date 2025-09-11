@@ -12,8 +12,8 @@
     }
 </script>
 
+<img src="../../icons-ex/style-prop.png" width="80" style="margin-bottom: 7px;" alt="Stroke shape">
 <div class="stroke-shape-selector" data-tooltip="stroke shape">
-    <img src="../../icons-ex/style-prop.png" width="80" style="margin-bottom: 7px;" alt="Stroke shape">
     <select on:change={handleStrokeShapeChange} bind:value={$config.strokeShape}>
         <option value="CONTINUOUS">Continuous</option>
         <option value="DOTTED">Dotted</option>
@@ -27,5 +27,6 @@
         border: 1px solid #4c566a;
         border-radius: 5px;
         padding: 5px;
+        font-family: 'Times New Roman', Times, serif;
     }
 </style>

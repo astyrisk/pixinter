@@ -7,13 +7,14 @@
         config.update(n => ({
             ...n,
             strokeColor: event.target.value,
-            color: event.target.value,
         }));
     }
 </script>
 
+<img src="../../icons-ex/color-prop.png" width="80" style="margin-bottom: 7px;" alt="Stroke shape">
 <div class="stroke-color-picker" data-tooltip="stroke color picker" style="background-color: {$config['strokeColor']}" on:click={() => document.getElementById('strokeColorInput').click()} on:keydown={(e) => e.key === 'Enter' && document.getElementById('strokeColorInput').click()} role="button" tabindex="0">
 </div>
+
 <input type="color" id="strokeColorInput" bind:value={$config['strokeColor']} on:input={handleStrokeColorChange} style="display: none;" />
 <div class="non-color-option" data-tooltip="no stroke color" on:click={() => config.update(n => ({ ...n, strokeColor: null }))} on:keydown={(e) => e.key === 'Enter' && config.update(n => ({ ...n, strokeColor: null }))} role="button" tabindex="0">
 </div>

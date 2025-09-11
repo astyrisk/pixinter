@@ -14,11 +14,13 @@
     }
    
     function handleSave() {
-    	const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
-    	if(canvas) {
-    		let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-    		window.location.href=image;
-    	}
+        const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+        if (canvas) {
+            const link = document.createElement('a');
+            link.download = 'drawing.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
     }
 
     function handleLoadClick() {
