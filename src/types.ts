@@ -25,7 +25,15 @@ interface Config {
     strokeColor: string | null,
     strokeWidth: number,
     eraserSize?: number,
+    strokeShape: StrokeShapeEnum,
 }
+
+const STROKE_SHAPE_ENUM = {
+    CONTINUOUS: 'CONTINUOUS',
+    DOTTED: 'DOTTED',
+} as const;
+
+type StrokeShapeEnum = ObjectValues<typeof STROKE_SHAPE_ENUM>;
 
 interface Command {
     execute(): void;
@@ -194,5 +202,5 @@ class FillCommand implements Command {
     }
 }
 
-export {Picture, TOOLENUM, Point, DrawCommand, CompoundCommand, ShapeCommand, FillCommand};
-export type {Config, ToolEnum, Command};
+export {Picture, TOOLENUM, Point, DrawCommand, CompoundCommand, ShapeCommand, FillCommand, STROKE_SHAPE_ENUM};
+export type {Config, ToolEnum, Command, StrokeShapeEnum};

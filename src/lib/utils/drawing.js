@@ -1,9 +1,13 @@
 import { pictureStore } from "../stores/pictureStore";
+import { config } from "../../stores"; // Corrected import path for config
 import { getRadius } from "../../subroutines";
 import { selectedShape } from "../stores/stores";
 import { get } from "svelte/store";
+import { STROKE_SHAPE_ENUM } from "../../types";
 
 export function drawRect(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isSquare) {
+    const currentConfig = get(config);
+    const strokeShape = currentConfig.strokeShape;
     let xStart = Math.min(start.x, end.x);
     let yStart = Math.min(start.y, end.y);
     let xEnd   = Math.max(start.x, end.x);
@@ -40,10 +44,17 @@ export function drawRect(start, end, color, strokeColor, strokeWidth, ctx, initi
     }
 
    initialPicture.drawPoints(drawn, color, ctx);
-   initialPicture.drawPoints(stroke, strokeColor, ctx);
+   if (strokeShape === STROKE_SHAPE_ENUM.DOTTED) {
+        const dottedStroke = getDottedStrokePoints(stroke);
+        initialPicture.drawPoints(dottedStroke, strokeColor, ctx);
+   } else {
+        initialPicture.drawPoints(stroke, strokeColor, ctx);
+   }
 }
 
 export function drawEllipse(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isCircle) {
+    const currentConfig = get(config);
+    const strokeShape = currentConfig.strokeShape;
     let rx = Math.abs(end.x - start.x);
     let ry = Math.abs(end.y - start.y);
 
@@ -90,7 +101,17 @@ export function drawEllipse(start, end, color, strokeColor, strokeWidth, ctx, in
     }
 
     initialPicture.drawPoints(drawn, color, ctx);
-    initialPicture.drawPoints(stroke, strokeColor, ctx);
+    if (strokeShape === STROKE_SHAPE_ENUM.DOTTED) {
+        stroke.sort((a, b) => {
+            const angleA = Math.atan2(a.y - start.y, a.x - start.x);
+            const angleB = Math.atan2(b.y - start.y, b.x - start.x);
+            return angleA - angleB;
+        });
+        const dottedStroke = getDottedPointsForOrderedShape(stroke);
+        initialPicture.drawPoints(dottedStroke, strokeColor, ctx);
+    } else {
+        initialPicture.drawPoints(stroke, strokeColor, ctx);
+    }
 }
 
 export function drawLine(start, end, color, ctx, initialPicture) {
@@ -106,8 +127,15 @@ export function drawLine(start, end, color, ctx, initialPicture) {
     let sy = (y0 < y1) ? 1 : -1;
     let err = dx - dy;
 
+    const currentConfig = get(config);
+    const strokeShape = currentConfig.strokeShape;
+    let drawCount = 0;
+
     while(true) {
-        drawn.push({x: x0, y: y0});
+        if (strokeShape === STROKE_SHAPE_ENUM.CONTINUOUS) {
+            drawn.push({x: x0, y: y0});
+        }
+        drawCount++;
 
         if ((x0 === x1) && (y0 === y1)) break;
         let e2 = 2 * err;
@@ -115,7 +143,12 @@ export function drawLine(start, end, color, ctx, initialPicture) {
         if (e2 < dx) { err += dx; y0 += sy; }
     }
 
-    initialPicture.drawPoints(drawn, color, ctx);
+    if (strokeShape === STROKE_SHAPE_ENUM.DOTTED) {
+        const dottedStroke = getDottedStrokePoints(drawn);
+        initialPicture.drawPoints(dottedStroke, color, ctx);
+    } else {
+        initialPicture.drawPoints(drawn, color, ctx);
+    }
 }
 
 export function drawShape(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isConstrained) {
@@ -127,4 +160,19 @@ export function drawShape(start, end, color, strokeColor, strokeWidth, ctx, init
     } else {
         drawLine(start, end, color, ctx, initialPicture);
     }
+}
+
+
+
+
+export function getDottedStrokePoints(points) {
+    return points.filter(p => (p.x + p.y) % 2 === 0);
+}
+
+export function getDottedPointsForOrderedShape(points) {
+    const dottedPoints = [];
+    for (let i = 0; i < points.length; i += 2) {
+        dottedPoints.push(points[i]);
+    }
+    return dottedPoints;
 }

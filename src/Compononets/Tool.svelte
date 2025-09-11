@@ -37,14 +37,6 @@
         }));
     }
 
-    function handleStrokeColorChange(event) {
-        config.update(n => ({
-            ...n,
-            strokeColor: event.target.value,
-        }));
-    }
-
-
     function handleUndo() {
         commandHistory.undo();
         pictureStore.update(p => {
@@ -106,9 +98,6 @@
     <input type="color" id="colorInput" bind:value={$config['color']} on:input={handleColorChange} style="display: none;" />
     <div class="non-color-option" data-tooltip="no color" on:click={() => config.update(n => ({ ...n, color: null }))}></div>
 
-    <div class="stroke-color-picker" data-tooltip="stroke color picker" style="background-color: {$config['strokeColor']}" on:click={() => document.getElementById('strokeColorInput').click()}></div>
-    <input type="color" id="strokeColorInput" bind:value={$config['strokeColor']} on:input={handleStrokeColorChange} style="display: none;" />
-    <div class="non-color-option" data-tooltip="no stroke color" on:click={() => config.update(n => ({ ...n, strokeColor: null }))}></div>
 
 </main>
 
@@ -131,13 +120,6 @@
         margin-top: 1em;
     }
     .color-picker {
-        width: 30px;
-        height: 30px;
-        border-radius: 10%;
-        margin-top: 1.3em;
-    }
-
-    .stroke-color-picker {
         width: 30px;
         height: 30px;
         border-radius: 10%;
