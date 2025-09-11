@@ -7,6 +7,7 @@
         config.update(n => ({
             ...n,
             strokeColor: event.target.value,
+            color: event.target.value,
         }));
     }
 </script>

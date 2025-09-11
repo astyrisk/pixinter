@@ -75,6 +75,7 @@ function createCommandHistory(pictureStore) {
   return {
     subscribe,
     execute: (command) => {
+      command.execute();
       update((history) => {
         console.log("Executing command:", command);
         pictureStore.update((p) => p);

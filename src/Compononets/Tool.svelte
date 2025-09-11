@@ -1,9 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { get } from "svelte/store";
     import { appStore } from "../lib/stores/appStore";
-    import { TOOLENUM } from "../types";
+    import { TOOLENUM, Picture } from "../types";
     import { getClassName } from "../subroutines";
     import ShapeTool from "./ShapeTool.svelte";
+    import { ClearAllCommand } from '../lib/ClearAllCommand';
 
     const { config, commandHistory, pictureStore } = appStore;
 
@@ -30,13 +32,6 @@
         }
     });
 
-    function handleColorChange(event) {
-        config.update(n => ({
-            ...n,
-            color: event.target.value,
-        }));
-    }
-
     function handleUndo() {
         commandHistory.undo();
         pictureStore.update(p => {
@@ -51,6 +46,11 @@
             p.redraw(ctx);
             return p;
         });
+    }
+
+    function handleClearAll() {
+        const command = new ClearAllCommand(get(pictureStore));
+        commandHistory.execute(command);
     }
 
     function handleMouseClick(event: MouseEvent) {
@@ -108,10 +108,14 @@
     </div>
 
     <div class="color-picker" data-tooltip="color picker" style="background-color: {$config['color']}" on:click={() => document.getElementById('colorInput').click()} on:keydown={(e) => e.key === 'Enter' && document.getElementById('colorInput').click()} role="button" tabindex="0"></div>
-    <input type="color" id="colorInput" bind:value={$config['color']} on:input={handleColorChange} style="display: none;" />
+    <input type="color" id="colorInput" bind:value={$config['color']} style="display: none;" />
     <div class="non-color-option" data-tooltip="no color" on:click={() => config.update(n => ({ ...n, color: null }))} on:keydown={(e) => e.key === 'Enter' && config.update(n => ({ ...n, color: null }))} role="button" tabindex="0"></div>
 
-
+    <!-- <div class="clean-all" data-tooltip="clean all">
+        <button on:click={handleClearAll} aria-label="Clean All">
+            <img src="../../icons-ex/clean-all.png" class="clean-all" width="40" alt="clean all icon">
+        </button>
+    </div> -->
 </main>
 
 

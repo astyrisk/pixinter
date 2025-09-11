@@ -19,6 +19,10 @@
     let drawing: boolean = false;
     let dirty = true;
 
+    pictureStore.subscribe(_ => {
+        dirty = true;
+    });
+
     onMount(() => {
         ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -63,7 +67,6 @@
     }
 
     function handleMouseDown(event: MouseEvent) {
-        console.log("Mouse down on drawing layer");
         if (event.button != 0) return;
 
         drawing = true;
@@ -74,7 +77,7 @@
         switch(get(config).tool) {
             case 'PICKER':
                 pickColor(getPointerPosition(event, ctx.canvas));
-                break;
+                return;
             case 'FILL':
                 pictureStore.fillColor(getPointerPosition(event, ctx.canvas), get(config)['color'], ctx);
                 let command = new FillCommand(pictureStore, initialPicture, $pictureStore);
