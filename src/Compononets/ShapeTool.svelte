@@ -37,8 +37,6 @@
     <img src={$selectedShape === 'rect' ? '../../icons-ex/rect.png' : $selectedShape === 'circle' ? '../../icons-ex/circle.png' : '../../icons-ex/line.png'} alt="Shape Tool" width="42px" class="shape img"/>
     {#if showMenu}
         <div class="context-menu">
-            <!-- <div class="shape img" on:click={() => selectShape('rect')}><img class="shape img" src="../../icons-ex/rect.png" width="30"> </div>
-            <div class="shape img" on:click={() => selectShape('circle')}><img class ="shape img" src="../../icons-ex/circle.png" width="30"></div> -->
             <div class="shape img" on:click={() => selectShape('rect')}> Rectangle </div>
             <div class="shape img" on:click={() => selectShape('circle')}>Circle </div>
             <div class="shape img" on:click={() => selectShape('line')}>Line </div>

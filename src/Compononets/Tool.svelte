@@ -100,12 +100,15 @@
 
     <div class="redo" data-tooltip="redo">  <img src="../../icons-ex/redo.png" class="redo" width="40" alt="redo icon" on:click={handleRedo} on:keydown={() => {}}> </div>
 
-    <div class="color-picker" data-tooltip="color picker" style="background-color: {$config['color']}" on:click={() => document.getElementById('colorInput').click()}></div>
 
+
+    <div class="color-picker" data-tooltip="color picker" style="background-color: {$config['color']}" on:click={() => document.getElementById('colorInput').click()}></div>
     <input type="color" id="colorInput" bind:value={$config['color']} on:input={handleColorChange} style="display: none;" />
+    <div class="non-color-option" data-tooltip="no color" on:click={() => config.update(n => ({ ...n, color: null }))}></div>
 
     <div class="stroke-color-picker" data-tooltip="stroke color picker" style="background-color: {$config['strokeColor']}" on:click={() => document.getElementById('strokeColorInput').click()}></div>
     <input type="color" id="strokeColorInput" bind:value={$config['strokeColor']} on:input={handleStrokeColorChange} style="display: none;" />
+    <div class="non-color-option" data-tooltip="no stroke color" on:click={() => config.update(n => ({ ...n, strokeColor: null }))}></div>
 
 </main>
 
@@ -141,12 +144,27 @@
         margin-top: 1.3em;
     }
 
-    .tool, .shape, .color-picker, .undo, .redo {
+    .non-color-option {
+        width: 30px;
+        height: 30px;
+        border-radius: 10%;
+        margin-top: 1.3em;
+        background-image: linear-gradient(to top left,
+                                        rgba(0,0,0,0) 0%,
+                                        rgba(0,0,0,0) 45%,
+                                        #ff0000 50%,
+                                        rgba(0,0,0,0) 55%,
+                                        rgba(0,0,0,0) 100%);
+        border: 1px solid #4c566a;
+        cursor: pointer;
+    }
+
+    .tool, .shape, .color-picker, .undo, .redo, .non-color-option {
         cursor: pointer;
         position: relative;
     }
 
-    .tool:hover::after, .shape:hover::after, .undo:hover::after, .redo:hover::after, .color-picker:hover::after {
+    .tool:hover::after, .shape:hover::after, .undo:hover::after, .redo:hover::after, .color-picker:hover::after, .stroke-color-picker:hover::after, .non-color-option:hover::after {
         content: attr(data-tooltip);
         position: absolute;
         left: 100%;

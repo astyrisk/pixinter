@@ -19,10 +19,10 @@ type ObjectValues<T> = T[keyof T];
 type ToolEnum = ObjectValues<typeof TOOLENUM>
 
 interface Config {
-    color: string,
+    color: string | null,
     background_color: string,
     tool: ToolEnum,
-    strokeColor: string,
+    strokeColor: string | null,
     strokeWidth: number,
     eraserSize?: number,
 }
@@ -36,7 +36,7 @@ class Picture {
     width: number;
     height: number;
     scale: number;
-    pixels: string[][];
+    pixels: (string | null)[][];
 
     constructor (width: number, height: number, scale: number) {
         this.width = width;
@@ -44,11 +44,11 @@ class Picture {
         this.scale = scale;
 
         this.pixels = new Array(height);
-        for (let i = 0; i < height ; i++) 
-            this.pixels[i] = new Array(width).fill("#E1E4EA");
+        for (let i = 0; i < height ; i++)
+            this.pixels[i] = new Array(width).fill(null); // Initialize with null
     }
 
-    setPixels(pixels: string[][], ctx: CanvasRenderingContext2D | null) {
+    setPixels(pixels: (string | null)[][], ctx: CanvasRenderingContext2D | null) {
         this.pixels = pixels;
         if (ctx) {
             this.redraw(ctx);
@@ -67,35 +67,42 @@ class Picture {
         ctx.clearRect(0, 0, this.width * this.scale, this.height * this.scale);
         for (let j = 0; j < this.height; j++)
             for (let i = 0; i < this.width; i++) {
-                if (this.pixels[j][i] !== 'transparent') {
-                    ctx.fillStyle = this.pixels[j][i];
+                console.log(`Pixel at (${i}, ${j}): ${this.pixels[j][i]}`);
+                if (this.pixels[j][i] !== null) { // Check for null instead of 'transparent'
+                    ctx.fillStyle = this.pixels[j][i] as string;
                     ctx.fillRect(i * 10, j * 10, this.scale, this.scale);
                 }
             }
     }
 
-    drawPoint(p: Point, color: string, ctx: CanvasRenderingContext2D | null) {
+    drawPoint(p: Point, color: string | null, ctx: CanvasRenderingContext2D | null) {
         if (p.y < 0 || p.y >= this.height || p.x < 0 || p.x >= this.width) return;
         this.pixels[p.y][p.x] = color;
-        if (ctx) {
-            ctx.fillStyle = color; 
+        if (ctx && color !== null) { // Only draw if color is not null
+            ctx.fillStyle = color;
             ctx.fillRect(p.x * 10, p.y * 10, this.scale, this.scale);
+        } else if (ctx && color === null) { // Clear the rectangle if color is null
+            ctx.clearRect(p.x * 10, p.y * 10, this.scale, this.scale);
         }
     }
 
-    getColor(p: Point) : string {
+    getColor(p: Point) : string | null {
         return this.pixels[p.y][p.x];
     }
 
-    drawPoints(points: Point[], color: string, ctx: CanvasRenderingContext2D | null) {
+    drawPoints(points: Point[], color: string | null, ctx: CanvasRenderingContext2D | null) {
         for (let {x, y} of points) {
             this.pixels[y][x] = color;
         }
 
-        if (ctx) {
+        if (ctx && color !== null) {
             ctx.fillStyle = color;
             for (let {x, y} of points) {
                 ctx.fillRect(x * this.scale, y * this.scale, this.scale, this.scale);
+            }
+        } else if (ctx && color === null) {
+            for (let {x, y} of points) {
+                ctx.clearRect(x * this.scale, y * this.scale, this.scale, this.scale);
             }
         }
     }
@@ -108,11 +115,11 @@ class Picture {
 
 class DrawCommand implements Command {
     point: Point;
-    color: string;
-    prevColor: string;
+    color: string | null;
+    prevColor: string | null;
     picture: Picture;
 
-    constructor(point: Point, color: string, picture: Picture) {
+    constructor(point: Point, color: string | null, picture: Picture) {
         this.point = point;
         this.color = color;
         this.picture = picture;
@@ -150,8 +157,8 @@ class CompoundCommand implements Command {
 
 class ShapeCommand implements Command {
     pictureStore: any;
-    initialPicturePixels: string[][];
-    finalPicturePixels: string[][];
+    initialPicturePixels: (string | null)[][];
+    finalPicturePixels: (string | null)[][];
 
     constructor(pictureStore: any, initialPicture: Picture, finalPicture: Picture) {
         this.pictureStore = pictureStore;
@@ -169,8 +176,8 @@ class ShapeCommand implements Command {
 }
 class FillCommand implements Command {
     pictureStore: any;
-    initialPicturePixels: string[][];
-    finalPicturePixels: string[][];
+    initialPicturePixels: (string | null)[][];
+    finalPicturePixels: (string | null)[][];
 
     constructor(pictureStore: any, initialPicture: Picture, finalPicture: Picture) {
         this.pictureStore = pictureStore;
