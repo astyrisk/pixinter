@@ -27,6 +27,9 @@
 
 	   $: if (ctx && $pictureStore) {
 	       $pictureStore.redraw(ctx);
+	       if ($config.showGrid) {
+	           drawGrid();
+	       }
 	   }
 
 	   function drawPoint(p: Point, currentConfig: Config) {
@@ -65,7 +68,26 @@
 	           color: selectedColor ?? n.color, // Use existing color if selectedColor is null
 	       }));
 	   }
-
+	
+	   function drawGrid() {
+	       ctx.strokeStyle = '#ccc';
+	       ctx.lineWidth = 1;
+	
+	       for (let i = 0; i < width; i += 10) {
+	           ctx.beginPath();
+	           ctx.moveTo(i, 0);
+	           ctx.lineTo(i, height);
+	           ctx.stroke();
+	       }
+	
+	       for (let i = 0; i < height; i += 10) {
+	           ctx.beginPath();
+	           ctx.moveTo(0, i);
+	           ctx.lineTo(width, i);
+	           ctx.stroke();
+	       }
+	   }
+	
 	   /* handling canvas */
 	   function handleMouseDown(event: MouseEvent) {
 	       if (event.button != 0) return;

@@ -26,7 +26,7 @@ Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter run
 ## Development
 ### Properties panel
 - [x] The properties panel should allow for modifying the selected line's stroke color, width, and style (solid, dashed, dotted).
-- [ ] stroke options? dotted and continuous , also normal line options? dotted and continuous
+- [x] stroke options? dotted and continuous , also normal line options? dotted and continuous
 ### Shapes
 - [x] line
 - [x] rectangle ( square: shift pressed)
@@ -40,10 +40,10 @@ Navigate to [localhost:5173](http://localhost:5173). You should see Pixinter run
 ### Layers
 - [ ] basic implementation
 ### canvas
-- [ ] Provide an option for a grid overlay on the canvas.
-- [ ] option to clear all the canvas, and everything!
+- [x] Provide an option for a grid overlay on the canvas.
+- [x] option to clear all the canvas, and everything!
 ### Action
-- [ ] saving an image would save it in png format, removing the background color 
+- [x] saving an image would save it in png format, removing the background color 
 - [ ] load is not working
 ### undo/redo
 - [x] undo not working for fill

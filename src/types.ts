@@ -26,6 +26,7 @@ interface Config {
     strokeWidth: number,
     eraserSize?: number,
     strokeShape: StrokeShapeEnum,
+    showGrid: boolean,
 }
 
 const STROKE_SHAPE_ENUM = {

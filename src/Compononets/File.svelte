@@ -1,17 +1,25 @@
 <script lang="ts">
     import { pictureStore } from '../lib/stores/pictureStore';
     import { Picture } from '../types';
+    import { commandHistory } from '../lib/stores/commandHistory';
+    import { ClearAllCommand } from '../lib/ClearAllCommand';
+    import { get } from 'svelte/store';
+    import { config } from '../stores';
     
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
     let fileInput: HTMLInputElement;
-
+   
+    function toggleGrid() {
+    	config.update(c => ({...c, showGrid: !c.showGrid}));
+    }
+   
     function handleSave() {
-        const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
-        if(canvas) {
-            let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-            window.location.href=image;
-        }
+    	const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+    	if(canvas) {
+    		let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    		window.location.href=image;
+    	}
     }
 
     function handleLoadClick() {
@@ -65,9 +73,23 @@
     }
 </script>
 
+<div class="action-button" data-tooltip="show grid">
+    <img src="/icons-ex/grid.png" alt="Save" width="30px" on:click={toggleGrid} on:keydown={() => {}} />
+   </div>
+   
+   <div class="action-button" data-tooltip="Clear all">
+    <img src="/icons-ex/clean-all.png" alt="Clean all" width="30px" on:click={() => {
+    	const pic = get(pictureStore);
+    	const command = new ClearAllCommand(pic);
+    	commandHistory.execute(command);
+    	command.execute();
+    }} on:keydown={() => {}} />
+   </div>
+
 <div class="action-button" data-tooltip="Save">
     <img src="/icons-ex/download.png" alt="Save" width="30px" on:click={handleSave} on:keydown={() => {}} />
 </div>
+
 <div class="action-button" data-tooltip="Load">
     <img src="/icons-ex/ulpoad.png" alt="Load" width="30px" on:click={handleLoadClick} on:keydown={() => {}} />
 </div>
