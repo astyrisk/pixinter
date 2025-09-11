@@ -1,24 +1,24 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { config } from "../stores";
+    import { appStore } from "../lib/stores/appStore";
     import { TOOLENUM } from "../types";
     import { getClassName } from "../subroutines";
-    import { pictureStore } from "../lib/stores/pictureStore.js";
-    import { commandHistory } from "../lib/stores/commandHistory.js";
-    import { selectedShape } from "../lib/stores/stores.js";
     import ShapeTool from "./ShapeTool.svelte";
+
+    const { config, commandHistory, pictureStore } = appStore;
 
     const tools: string[] = ["pen", "eraser", "fill", "picker"];
 
     let toolsImg: HTMLImageElement[];
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
+    let shapeToolImg: HTMLImageElement;
 
     onMount(() => {
         toolsImg = Array.from(document.querySelectorAll(".img"));
-        const shapeToolImg = document.querySelector('.tool[data-tooltip="shape"] img');
+        shapeToolImg = document.querySelector('.shape.img') as HTMLImageElement;
         if (shapeToolImg) {
-            toolsImg.push(shapeToolImg as HTMLImageElement);
+            toolsImg.push(shapeToolImg);
         }
         canvas = document.querySelector('canvas') as HTMLCanvasElement;
         ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -72,6 +72,12 @@
             }));
         }
    }
+
+    function handleShapeToolActivation() {
+        if (shapeToolImg) {
+            handleMouseClick({ target: shapeToolImg } as unknown as MouseEvent);
+        }
+    }
 </script>
 
 
@@ -79,24 +85,31 @@
     <!-- Tools-->
     {#each tools as tool}
         <div class="tool" data-tooltip={tool}>
-            <img src="../../icons-ex/{tool}.png" class="{tool} img" alt="{tool}" width="42px" on:click={handleMouseClick} on:keydown={() => {}} on:focus={() => {}}>
+            <button on:click={handleMouseClick} aria-label={tool}>
+                <img src="../../icons-ex/{tool}.png" class="{tool} img" alt={tool} width="42px">
+            </button>
         </div>
     {/each}
 
+    <div on:click={handleShapeToolActivation} on:keydown={(e) => e.key === 'Enter' && handleShapeToolActivation()} role="button" tabindex="0">
+        <ShapeTool />
+    </div>
 
-<div on:click={handleMouseClick} on:focus={() => {}} on:keydown={()=>{}}>
-    <ShapeTool />
-</div>
+    <div class="undo" data-tooltip="undo">
+        <button on:click={handleUndo} aria-label="Undo">
+            <img src="../../icons-ex/undo.png" class="undo" width="40" alt="undo icon">
+        </button>
+    </div>
 
-    <div class="undo" data-tooltip="undo">  <img src="../../icons-ex/undo.png" class="undo" width="40" alt="undo icon" on:click={handleUndo} on:keydown={() => {}}> </div>
+    <div class="redo" data-tooltip="redo">
+        <button on:click={handleRedo} aria-label="Redo">
+            <img src="../../icons-ex/redo.png" class="redo" width="40" alt="redo icon">
+        </button>
+    </div>
 
-    <div class="redo" data-tooltip="redo">  <img src="../../icons-ex/redo.png" class="redo" width="40" alt="redo icon" on:click={handleRedo} on:keydown={() => {}}> </div>
-
-
-
-    <div class="color-picker" data-tooltip="color picker" style="background-color: {$config['color']}" on:click={() => document.getElementById('colorInput').click()}></div>
+    <div class="color-picker" data-tooltip="color picker" style="background-color: {$config['color']}" on:click={() => document.getElementById('colorInput').click()} on:keydown={(e) => e.key === 'Enter' && document.getElementById('colorInput').click()} role="button" tabindex="0"></div>
     <input type="color" id="colorInput" bind:value={$config['color']} on:input={handleColorChange} style="display: none;" />
-    <div class="non-color-option" data-tooltip="no color" on:click={() => config.update(n => ({ ...n, color: null }))}></div>
+    <div class="non-color-option" data-tooltip="no color" on:click={() => config.update(n => ({ ...n, color: null }))} on:keydown={(e) => e.key === 'Enter' && config.update(n => ({ ...n, color: null }))} role="button" tabindex="0"></div>
 
 
 </main>
@@ -108,6 +121,12 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+    }
+    button {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
     }
     img {
         border-width: 0px;

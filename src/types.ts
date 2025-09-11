@@ -85,6 +85,11 @@ class Picture {
             }
     }
 
+    draw(p: Point, color: string | null) {
+        if (p.y < 0 || p.y >= this.height || p.x < 0 || p.x >= this.width) return;
+        this.pixels[p.y][p.x] = color;
+    }
+
     drawPoint(p: Point, color: string | null, ctx: CanvasRenderingContext2D | null) {
         if (p.y < 0 || p.y >= this.height || p.x < 0 || p.x >= this.width) return;
         this.pixels[p.y][p.x] = color;

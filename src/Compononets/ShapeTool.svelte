@@ -1,6 +1,6 @@
 <script>
-    import { selectedShape } from '../lib/stores/stores.js';
-    import { config } from '../stores';
+    import { appStore } from '../lib/stores/appStore';
+    const { selectedShape, config } = appStore;
     import { TOOLENUM } from '../types';
     import { onMount, onDestroy } from 'svelte';
 
@@ -33,13 +33,13 @@
 
 </script>
 
-<div class="tool" on:contextmenu={handleContextMenu} data-tooltip="shape" bind:this={toolNode} class:menu-open={showMenu}>
+<div class="tool" on:contextmenu={handleContextMenu} on:keydown={(e) => e.key === 'Enter' && handleContextMenu(e)} data-tooltip="shape" bind:this={toolNode} class:menu-open={showMenu} role="button" tabindex="0">
     <img src={$selectedShape === 'rect' ? '../../icons-ex/rect.png' : $selectedShape === 'circle' ? '../../icons-ex/circle.png' : '../../icons-ex/line.png'} alt="Shape Tool" width="42px" class="shape img"/>
     {#if showMenu}
         <div class="context-menu">
-            <div class="shape img" on:click={() => selectShape('rect')}> Rectangle </div>
-            <div class="shape img" on:click={() => selectShape('circle')}>Circle </div>
-            <div class="shape img" on:click={() => selectShape('line')}>Line </div>
+            <button class="shape img" on:click={() => selectShape('rect')}> Rectangle </button>
+            <button class="shape img" on:click={() => selectShape('circle')}>Circle </button>
+            <button class="shape img" on:click={() => selectShape('line')}>Line </button>
         </div>
     {/if}
 </div>
@@ -89,11 +89,16 @@
         white-space: nowrap;
         z-index: 1;
     }
-    .context-menu div {
+    .context-menu button {
+        background: none;
+        border: none;
         padding: 5px;
         cursor: pointer;
+        color: #E1E4EA;
+        font-family: inherit;
+        font-size: inherit;
     }
-    .context-menu div:hover {
+    .context-menu button:hover {
         background-color: #434c5e;
     }
 </style>

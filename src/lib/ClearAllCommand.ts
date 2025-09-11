@@ -1,4 +1,4 @@
-import { pictureStore } from './stores/pictureStore';
+import { pictureStore } from './stores/appStore';
 import { Picture } from '../types';
 import type { Command } from '../types';
 

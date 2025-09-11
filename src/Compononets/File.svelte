@@ -1,18 +1,16 @@
 <script lang="ts">
-    import { pictureStore } from '../lib/stores/pictureStore';
-	import { Picture } from '../types';
-	import { SCALE } from '../lib/constants';
-    import { commandHistory } from '../lib/stores/commandHistory';
+    import { appStore } from '../lib/stores/appStore';
+ import { Picture } from '../types';
+ import { SCALE } from '../lib/constants';
     import { ClearAllCommand } from '../lib/ClearAllCommand';
     import { get } from 'svelte/store';
-    import { config } from '../stores';
     
     let canvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
     let fileInput: HTMLInputElement;
    
     function toggleGrid() {
-    	config.update(c => ({...c, showGrid: !c.showGrid}));
+    	appStore.config.update(c => ({...c, showGrid: !c.showGrid}));
     }
    
     function handleSave() {
@@ -45,8 +43,8 @@
                 const pixels = await pictureFromImage(image);
                 const newPic = new Picture(pixels.length, pixels[0].length, SCALE);
                 newPic.setPixels(pixels, mainCtx);
-                pictureStore.update(_ => newPic);
-                pictureStore.subscribe(p => p.redraw(mainCtx))();
+                appStore.pictureStore.update(_ => newPic);
+                appStore.pictureStore.subscribe(p => p.redraw(mainCtx))();
             };
             image.src = reader.result as string;
         };
@@ -64,7 +62,7 @@
         const imageData = ctx.getImageData(0, 0, width, height);
 
         return new Promise((resolve) => {
-            const worker = new Worker(new URL('../lib/utils/imageProcessor.js', import.meta.url));
+            const worker = new Worker(new URL('../lib/workers/imageProcessor.worker.ts', import.meta.url));
             worker.onmessage = (event) => {
                 resolve(event.data);
                 worker.terminate();
@@ -75,28 +73,42 @@
 </script>
 
 <div class="action-button" data-tooltip="show grid">
-    <img src="/icons-ex/grid.png" alt="Save" width="30px" on:click={toggleGrid} on:keydown={() => {}} />
-   </div>
-   
-   <div class="action-button" data-tooltip="Clear all">
-    <img src="/icons-ex/clean-all.png" alt="Clean all" width="30px" on:click={() => {
-    	const pic = get(pictureStore);
-    	const command = new ClearAllCommand(pic);
-    	commandHistory.execute(command);
-    	command.execute();
-    }} on:keydown={() => {}} />
-   </div>
+	<button on:click={toggleGrid} aria-label="Toggle grid">
+		<img src="/icons-ex/grid.png" alt="Toggle grid" width="30px" />
+	</button>
+</div>
+
+<div class="action-button" data-tooltip="Clear all">
+	<button on:click={() => {
+		const pic = get(appStore.pictureStore);
+		const command = new ClearAllCommand(pic);
+		appStore.commandHistory.execute(command);
+		command.execute();
+	}} aria-label="Clear all">
+		<img src="/icons-ex/clean-all.png" alt="Clean all" width="30px" />
+	</button>
+</div>
 
 <div class="action-button" data-tooltip="Save">
-    <img src="/icons-ex/download.png" alt="Save" width="30px" on:click={handleSave} on:keydown={() => {}} />
+	<button on:click={handleSave} aria-label="Save">
+		<img src="/icons-ex/download.png" alt="Save" width="30px" />
+	</button>
 </div>
 
 <div class="action-button" data-tooltip="Load">
-    <img src="/icons-ex/ulpoad.png" alt="Load" width="30px" on:click={handleLoadClick} on:keydown={() => {}} />
+	<button on:click={handleLoadClick} aria-label="Load">
+		<img src="/icons-ex/ulpoad.png" alt="Load" width="30px" />
+	</button>
 </div>
 <input type="file" bind:this={fileInput} on:change={handleFileSelect} style="display: none;" />
 
 <style>
+    button {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
     img {
         border-width: 0px;
         border: solid;
@@ -106,7 +118,6 @@
         margin-right: 7px;
         margin-left: 7px;
         margin-top: 1em;
-        cursor: pointer;
     }
     .action-button {
         position: relative;

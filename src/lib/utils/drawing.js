@@ -1,7 +1,7 @@
-import { pictureStore } from "../stores/pictureStore";
-import { config } from "../../stores"; // Corrected import path for config
+import { pictureStore } from "../stores/appStore";
+import { config } from "../stores/appStore"; // Corrected import path for config
 import { getRadius } from "../../subroutines";
-import { selectedShape } from "../stores/stores";
+import { selectedShape } from "../stores/appStore";
 import { get } from "svelte/store";
 import { STROKE_SHAPE_ENUM } from "../../types";
 
@@ -158,6 +158,7 @@ export function drawShape(start, end, color, strokeColor, strokeWidth, ctx, init
     } else if (shape === 'circle') {
         drawEllipse(start, end, color, strokeColor, strokeWidth, ctx, initialPicture, isConstrained);
     } else {
+        console.log("Drawing line with:", { start, end, color, strokeColor, strokeWidth });
         drawLine(start, end, color, ctx, initialPicture);
     }
 }

@@ -4,7 +4,7 @@
 	import File from "./Compononets/File.svelte";
 	import PropPanel from "./Compononets/PropPanel.svelte";
 	import { onMount } from 'svelte';
-	import { config } from "./stores";
+	import { config } from "./lib/stores/appStore";
 
 	onMount(() => {
 		console.log('Current tool:', $config.tool);
