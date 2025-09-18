@@ -12,7 +12,7 @@
 </script>
 
 <div class="stroke-width-slider" data-tooltip="stroke width">
-    <img src="../../icons-ex/stroke.png" width="90" style="margin-bottom: 10px;" alt="Stroke width">
+    <img src="./icons//stroke.png" width="90" style="margin-bottom: 10px;" alt="Stroke width">
     <input type="range" min="0" max="3" bind:value={$config['strokeWidth']} on:input={handleStrokeWidthChange} style="width: 80px;" />
     <input type="number" bind:value={$config['strokeWidth']} min="1" max="3" class="stroke-width-input" readonly  />
 </div>

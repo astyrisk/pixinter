@@ -1,0 +1,1 @@
+(function(){"use strict";self.onmessage=async i=>{const{imageData:l}=i.data,{width:o,height:n,data:s}=l,e=Array(n).fill(0).map(()=>Array(o).fill(""));function a(t){return t.toString(16).padStart(2,"0")}for(let t=0;t<s.length;t+=4){const f=s[t],g=s[t+1],h=s[t+2],r=Math.floor(t/4%o),c=Math.floor(t/4/o);c<n&&r<o&&(e[c][r]="#"+a(f)+a(g)+a(h))}self.postMessage(e)}})();

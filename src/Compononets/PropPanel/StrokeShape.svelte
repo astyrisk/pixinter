@@ -12,7 +12,7 @@
     }
 </script>
 
-<img src="../../icons-ex/style-prop.png" width="80" style="margin-bottom: 7px;" alt="Stroke shape">
+<img src="./icons//style-prop.png" width="80" style="margin-bottom: 7px;" alt="Stroke shape">
 <div class="stroke-shape-selector" data-tooltip="stroke shape">
     <select on:change={handleStrokeShapeChange} bind:value={$config.strokeShape}>
         <option value="CONTINUOUS">Continuous</option>

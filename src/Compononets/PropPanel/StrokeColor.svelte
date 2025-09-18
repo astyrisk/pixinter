@@ -11,7 +11,7 @@
     }
 </script>
 
-<img src="../../icons-ex/color-prop.png" width="80" style="margin-bottom: 7px;" alt="Stroke shape">
+<img src="./icons//color-prop.png" width="80" style="margin-bottom: 7px;" alt="Stroke shape">
 <div class="stroke-color-picker" data-tooltip="stroke color picker" style="background-color: {$config['strokeColor']}" on:click={() => document.getElementById('strokeColorInput').click()} on:keydown={(e) => e.key === 'Enter' && document.getElementById('strokeColorInput').click()} role="button" tabindex="0">
 </div>
 

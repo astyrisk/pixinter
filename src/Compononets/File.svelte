@@ -76,7 +76,7 @@
 
 <div class="action-button" data-tooltip="show grid">
 	<button on:click={toggleGrid} aria-label="Toggle grid">
-		<img src="/icons-ex/grid.png" alt="Toggle grid" width="30px" />
+		<img src="./icons/grid.png" alt="Toggle grid" width="30px" />
 	</button>
 </div>
 
@@ -87,19 +87,19 @@
 		appStore.commandHistory.execute(command);
 		command.execute();
 	}} aria-label="Clear all">
-		<img src="/icons-ex/clean-all.png" alt="Clean all" width="30px" />
+		<img src="/icons/clean-all.png" alt="Clean all" width="30px" />
 	</button>
 </div>
 
 <div class="action-button" data-tooltip="Save">
 	<button on:click={handleSave} aria-label="Save">
-		<img src="/icons-ex/download.png" alt="Save" width="30px" />
+		<img src="/icons/download.png" alt="Save" width="30px" />
 	</button>
 </div>
 
 <div class="action-button" data-tooltip="Load">
 	<button on:click={handleLoadClick} aria-label="Load">
-		<img src="/icons-ex/ulpoad.png" alt="Load" width="30px" />
+		<img src="/icons/ulpoad.png" alt="Load" width="30px" />
 	</button>
 </div>
 <input type="file" bind:this={fileInput} on:change={handleFileSelect} style="display: none;" />

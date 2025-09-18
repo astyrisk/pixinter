@@ -48,11 +48,6 @@
         });
     }
 
-    function handleClearAll() {
-        const command = new ClearAllCommand(get(pictureStore));
-        commandHistory.execute(command);
-    }
-
     function handleMouseClick(event: MouseEvent) {
         let toolName: string = getClassName(event.target);
         let targetElement = undefined;
@@ -86,7 +81,7 @@
     {#each tools as tool}
         <div class="tool" data-tooltip={tool}>
             <button on:click={handleMouseClick} aria-label={tool}>
-                <img src="../../icons-ex/{tool}.png" class="{tool} img" alt={tool} width="42px">
+                <img src="./icons//{tool}.png" class="{tool} img" alt={tool} width="42px">
             </button>
         </div>
     {/each}
@@ -97,13 +92,13 @@
 
     <div class="undo" data-tooltip="undo">
         <button on:click={handleUndo} aria-label="Undo">
-            <img src="../../icons-ex/undo.png" class="undo" width="40" alt="undo icon">
+            <img src="./icons//undo.png" class="undo" width="40" alt="undo icon">
         </button>
     </div>
 
     <div class="redo" data-tooltip="redo">
         <button on:click={handleRedo} aria-label="Redo">
-            <img src="../../icons-ex/redo.png" class="redo" width="40" alt="redo icon">
+            <img src="./icons//redo.png" class="redo" width="40" alt="redo icon">
         </button>
     </div>
 
@@ -111,11 +106,6 @@
     <input type="color" id="colorInput" bind:value={$config['color']} style="display: none;" />
     <div class="non-color-option" data-tooltip="no color" on:click={() => config.update(n => ({ ...n, color: null }))} on:keydown={(e) => e.key === 'Enter' && config.update(n => ({ ...n, color: null }))} role="button" tabindex="0"></div>
 
-    <!-- <div class="clean-all" data-tooltip="clean all">
-        <button on:click={handleClearAll} aria-label="Clean All">
-            <img src="../../icons-ex/clean-all.png" class="clean-all" width="40" alt="clean all icon">
-        </button>
-    </div> -->
 </main>
 
 
@@ -182,6 +172,6 @@
         border: 1px solid #E1E4EA;
         border-radius: 5px;
         white-space: nowrap;
-        z-index: 1;
+        z-index: 3;
     }
 </style>

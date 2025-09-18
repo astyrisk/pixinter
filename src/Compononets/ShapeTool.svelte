@@ -34,7 +34,7 @@
 </script>
 
 <div class="tool" on:contextmenu={handleContextMenu} on:keydown={(e) => e.key === 'Enter' && handleContextMenu(e)} data-tooltip="shape" bind:this={toolNode} class:menu-open={showMenu} role="button" tabindex="0">
-    <img src={$selectedShape === 'rect' ? '../../icons-ex/rect.png' : $selectedShape === 'circle' ? '../../icons-ex/circle.png' : '../../icons-ex/line.png'} alt="Shape Tool" width="42px" class="shape img"/>
+    <img src={$selectedShape === 'rect' ? './icons//rect.png' : $selectedShape === 'circle' ? './icons//circle.png' : './icons//line.png'} alt="Shape Tool" width="42px" class="shape img"/>
     {#if showMenu}
         <div class="context-menu">
             <button class="shape img" on:click={() => selectShape('rect')}> Rectangle </button>
@@ -63,6 +63,7 @@
         margin-right: 7px;
         margin-left: 7px;
     }
+
     .context-menu {
         position: absolute;
         top: 0;
@@ -74,6 +75,7 @@
         display: flex;
         flex-direction: row;
     }
+
     .tool:not(.menu-open):hover::after {
         content: attr(data-tooltip);
         position: absolute;
@@ -89,6 +91,7 @@
         white-space: nowrap;
         z-index: 1;
     }
+
     .context-menu button {
         background: none;
         border: none;
@@ -98,6 +101,7 @@
         font-family: inherit;
         font-size: inherit;
     }
+
     .context-menu button:hover {
         background-color: #434c5e;
     }

@@ -106,6 +106,8 @@
                 pictureStore.set(tempPicture);
                 dirty = true;
                 break;
+            case 'PICKER':
+                break;
             default:
                 drawPoint(getPointerPosition(event, ctx.canvas), get(config));
         }
@@ -127,4 +129,4 @@
     }
 </script>
 
-<canvas id="canvas" bind:this={canvas} {width} {height} style="position: absolute; top: 0; left: 0; z-index: 1;" on:mousedown={handleMouseDown} on:mousemove={handleMove} on:mouseup={handleMouseUp} on:contextmenu|preventDefault|stopPropagation={handleContextMenu}></canvas>
+<canvas id="canvas" bind:this={canvas} {width} {height} style="position: absolute; top: 0; left: 0; z-index: 2;" on:mousedown={handleMouseDown} on:mousemove={handleMove} on:mouseup={handleMouseUp} on:contextmenu|preventDefault|stopPropagation={handleContextMenu}></canvas>
