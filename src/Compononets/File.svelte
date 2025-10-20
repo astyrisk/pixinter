@@ -104,8 +104,14 @@
 </div>
 <input type="file" bind:this={fileInput} on:change={handleFileSelect} style="display: none;" />
 
+<div class="action-button" data-tooltip="Source code">
+	<a href="https://github.com/astyrisk/pixinter" target="_blank" rel="noopener noreferrer">
+		<img src="/icons/github.png" alt="Source code" width="30px" />
+	</a>
+</div>
+
 <style>
-    button {
+    button, a {
         background: none;
         border: none;
         padding: 0;
